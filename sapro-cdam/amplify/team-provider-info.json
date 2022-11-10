@@ -14,6 +14,18 @@
     "categories": {
       "api": {
         "saprocdam": {}
+      },
+      "auth": {
+        "saprocdamd49d7079": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1w2j8gp4cona6",
+          "type": "manual"
+        }
+      },
+      "storage": {
+        "saproCDAMDocumentStore": {}
       }
     }
   }
