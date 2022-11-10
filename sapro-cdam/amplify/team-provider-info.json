@@ -10,6 +10,11 @@
       "StackName": "amplify-saprocdam-dev-12606",
       "StackId": "arn:aws:cloudformation:us-east-1:270575288362:stack/amplify-saprocdam-dev-12606/8f79e0b0-60c0-11ed-90f8-0ee25b45eaa3",
       "AmplifyAppId": "d1w2j8gp4cona6"
+    },
+    "categories": {
+      "api": {
+        "saprocdam": {}
+      }
     }
   }
 }
