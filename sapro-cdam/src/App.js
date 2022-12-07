@@ -97,9 +97,7 @@ export default function App({ signOut, user }) {
   async function uploadFile(e) {
     const file = e.target.files[0];
     try {
-      await Storage.put(file.name, file, {
-        // contentType: "image/png", // contentType is optional
-      });
+      await Storage.put(file.name, file);
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
@@ -110,7 +108,8 @@ export default function App({ signOut, user }) {
     let signedFiles = files.map(f => Storage.get(f.key))
     signedFiles = await Promise.all(signedFiles)
     console.log('signedFiles: ', signedFiles)
-    setFileState({ files: signedFiles })
+    console.log('Files: ', files)
+    setFileState([...filesState, signedFiles, files])
   }
 
 
@@ -136,20 +135,25 @@ export default function App({ signOut, user }) {
             value={formState.responsibleParty}
             placeholder="Checklist Owner"
           />
-          <input type="file" onChange={uploadFile} />
-          <button style={styles.button} onClick={uploadFile}>Upload File</button>
           <button style={styles.button} onClick={addChecklist}>Create New Checklist</button>
-          <button style={styles.button} onClick={listFiles}>List Files</button>
+          <div style={styles.container}>
+            <input type="file" onChange={uploadFile} />
+            <button style={styles.button} onClick={uploadFile}>Upload File</button>
+            <button style={styles.button} onClick={listFiles}>List Files</button>
+          </div>
           <div>
             {
-              // console.log(filesState)
-              filesState.map((file, i) => (
-                <img
-                  key={i}
-                  src={file}
-                  style={{height: 300}}
-                />
-              ))
+              console.log(filesState, "foo") //TODO: probably need to reset fileState every time the loop runs so that we don't end up with repetition
+            }
+            {
+              // filesState.map((links, files) => (
+              //   // <img
+              //   //   key={i}
+              //   //   src={file} //TODO: FIX THJIS SHIXXXX
+              //   //   style={{height: 300}}
+              //   // />
+              //   <a href={links}>{files.key}</a>
+              // ))
             }
           </div>
           {
