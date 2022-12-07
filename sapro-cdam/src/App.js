@@ -5,7 +5,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import React, { useEffect, useState } from 'react'
-import { Amplify, API, Auth, Hub, graphqlOperation } from 'aws-amplify'
+import { Amplify, API, Auth, Hub, graphqlOperation, Storage } from 'aws-amplify'
 import { createChecklist } from './graphql/mutations'
 import { listChecklists } from './graphql/queries'
 import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
@@ -19,6 +19,7 @@ const initialState = { name: '', description: '' };
 export default function App({ signOut, user }) {
   const [formState, setFormState] = useState(initialState)
   const [Checklists, setChecklists] = useState([])
+  const [filesState, setFileState] = useState([])
   // const { user, signOut } = useAuthenticator((context) => [context.user])
   const { route } = useAuthenticator(context => [context.route])
 
@@ -93,20 +94,23 @@ export default function App({ signOut, user }) {
     }
   }
 
-  async function onChange(e) {
+  async function uploadFile(e) {
     const file = e.target.files[0];
     try {
       await Storage.put(file.name, file, {
-        contentType: "image/png", // contentType is optional
+        // contentType: "image/png", // contentType is optional
       });
     } catch (error) {
       console.log("Error uploading file: ", error);
     }
   }
 
-
-  function buildChecklist(name) {
-    
+  async function listFiles(){
+    const files = await Storage.list('')
+    let signedFiles = files.map(f => Storage.get(f.key))
+    signedFiles = await Promise.all(signedFiles)
+    console.log('signedFiles: ', signedFiles)
+    setFileState({ files: signedFiles })
   }
 
 
@@ -115,8 +119,8 @@ export default function App({ signOut, user }) {
       <Authenticator services={services} components={components} initialState="signIn">
         {({ signOut }) => <button onClick={signOut}>Sign out</button>}
       </Authenticator>
-      {/* <AmplifySignOut/> */}
 
+      {/*TODO: this is kinda a shitty way of discovering if the user is authenticated, potentially change this */}
       {route === 'authenticated' && 
         <>
           <h2>SAPRO-CDAM Checklists</h2>
@@ -132,8 +136,22 @@ export default function App({ signOut, user }) {
             value={formState.responsibleParty}
             placeholder="Checklist Owner"
           />
-          <input type="file" onChange={onChange} />
+          <input type="file" onChange={uploadFile} />
+          <button style={styles.button} onClick={uploadFile}>Upload File</button>
           <button style={styles.button} onClick={addChecklist}>Create New Checklist</button>
+          <button style={styles.button} onClick={listFiles}>List Files</button>
+          <div>
+            {
+              // console.log(filesState)
+              filesState.map((file, i) => (
+                <img
+                  key={i}
+                  src={file}
+                  style={{height: 300}}
+                />
+              ))
+            }
+          </div>
           {
             Checklists.map((checklist, index) => (
               <div key={checklist.id ? checklist.id : index} style={styles.checklist}>
