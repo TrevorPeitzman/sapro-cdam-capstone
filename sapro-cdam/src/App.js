@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react'
 import { Amplify, API, Auth, Hub, graphqlOperation, Storage } from 'aws-amplify'
 import { createChecklist } from './graphql/mutations'
 import { listChecklists } from './graphql/queries'
-import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
+import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme, Alert } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
 import awsExports from "./aws-exports";
@@ -56,6 +56,7 @@ export default function App({ signOut, user }) {
         console.log("email check fail");
         // TODO: fix this to make it a bit cleaner of an error than a popup message
         alert("This email domain is not permitted. Please sign up with a permitted email.");
+        <Alert severity="error">Not permitted</Alert>
         attributes.email = "nope";
         return Auth.signUp({
           username,
