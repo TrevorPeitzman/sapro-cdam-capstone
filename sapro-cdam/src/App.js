@@ -57,7 +57,6 @@ export default function App({ signOut, user }) {
         // TODO: fix this to make it a bit cleaner of an error than a popup message
         alert("This email domain is not permitted. Please sign up with a permitted email.");
         attributes.email = "nope";
-        
         return Auth.signUp({
           username,
           password,
