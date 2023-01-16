@@ -4,14 +4,21 @@
 import logo from './logo.svg';
 import './App.css';
 
+import awsExports from "./aws-exports";
 import React, { useEffect, useState } from 'react'
 import { Amplify, API, Auth, Hub, graphqlOperation, Storage } from 'aws-amplify'
 import { createChecklist } from './graphql/mutations'
 import { listChecklists } from './graphql/queries'
-import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme, Alert } from '@aws-amplify/ui-react';
+import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
-import awsExports from "./aws-exports";
+// Snackbar stuff
+import MuiAlert from '@mui/material/Alert';
+import { Snackbar } from '@mui/material';
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 Amplify.configure(awsExports);
 
 const initialState = { name: '', description: '' };
@@ -55,8 +62,12 @@ export default function App({ signOut, user }) {
       } else {
         console.log("email check fail");
         // TODO: fix this to make it a bit cleaner of an error than a popup message
-        alert("This email domain is not permitted. Please sign up with a permitted email.");
-        <Alert severity="error">Not permitted</Alert>
+        // alert("This email domain is not permitted. Please sign up with a permitted email.");
+        <Snackbar open={true} anchorOrigin={{vertical: "top", horizontal: "center"}}>
+          <Alert severity="error" sx={{ width: '100%' }}>
+            This email domain is not permitted. Please sign up with a permitted email.
+          </Alert>
+        </Snackbar>
         attributes.email = "nope";
         return Auth.signUp({
           username,
@@ -99,8 +110,10 @@ export default function App({ signOut, user }) {
     const file = e.target.files[0];
     try {
       await Storage.put(file.name, file);
+      <Snackbar open={true} anchorOrigin={{vertical: "top", horizontal: "center"}} message="Upload Successful" autoHideDuration={6000}/>
     } catch (error) {
       console.log("Error uploading file: ", error);
+      <Snackbar open={true} anchorOrigin={{vertical: "top", horizontal: "center"}} message="Upload Unsuccessful"/>
     }
   }
 
@@ -111,6 +124,17 @@ export default function App({ signOut, user }) {
     console.log('signedFiles: ', signedFiles)
     console.log('Files: ', files)
     setFileState([...filesState, signedFiles, files])
+
+    {files.map((f) => (
+      <Button
+          key={f.key}
+          sx={{ my: 2, color: 'white', display: 'block' }}
+          component="a" 
+          to={signedFiles}
+      >
+          {f.key}
+      </Button>
+    ))}
   }
 
 
