@@ -44,7 +44,7 @@ export default function App({ signOut, user }) {
       attributes.email = attributes.email.toLowerCase();
 
       // This is how we check if the email is from an approved domain
-      console.log("I'm in the email checker");
+      console.log("I'm in the email checker"); //TODO: Remove this logging
       if (/^\w+([.-]?\w+)*@usna.edu$/.test(attributes.email)) {
         console.log("email check success");
         return Auth.signUp({
