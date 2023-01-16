@@ -4,12 +4,17 @@ import Layout from "./pages/Layout";
 // import Home from "./pages/Home";
 // import Blogs from "./pages/Blogs";
 import Contact from "./pages/Contact";
+import Logout from "./pages/Logout";
 import NoPage from "./pages/NoPage";
+import Dashboard from "./pages/Dashboard";
 import App from './App';
-import { useAuthenticator} from '@aws-amplify/ui-react';
+import { Authenticator, useAuthenticator} from '@aws-amplify/ui-react';
 
 
 
+// Handle all page routing here. IE wherever there is a to={Name} in a
+// button/item/etc there needs to be a routing here. then create that
+// matching page in the "pages" folder
 function Router() {
     const { route } = useAuthenticator(context => [context.route])
     return (
@@ -21,9 +26,11 @@ function Router() {
                     {route === 'authenticated' &&
                         <>
                             
+                            <Route path="Dashboard" element={<Dashboard />} />
                         </>
                     }
                     <Route path="contact" element={<Contact />} />
+                    <Route path="Logout" element={<Logout />} />
                     <Route path="*" element={<NoPage />} />
                 </Route>
             </Routes>
