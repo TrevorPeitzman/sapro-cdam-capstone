@@ -1,31 +1,7 @@
 // import React from "react";
 // import { BrowserRouter, Route, Link } from "react-router-dom";
 import { useAuthenticator, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
-
-// function Navbar() {
-//     const { route } = useAuthenticator(context => [context.route])
-//     return (
-//         <nav>
-//             <ul>
-//                 <li>
-//                     <Link to="/">Home</Link>
-//                 </li>
-//                 {route === 'authenticated' &&
-//                     <li>
-//                         <Link to="/blogs">Blogs</Link>
-//                     </li>
-
-//                 }
-//                 <li>
-//                     <Link to="/contact">Contact</Link>
-//                 </li>
-//             </ul>
-//         </nav>
-//     );
-// }
-
-// export default Navbar;
-
+import { Link } from "react-router-dom";
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -39,10 +15,21 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+// const pages = ['Products', 'Pricing', 'Blog'];
+// const pages = {
+//     async authedPages() {
+//         if (route === 'authenticated') {
+//             return ['App', 'Test'];
+//         } else {
+//             return ['Products'];
+//         }
+//     }
+// };
+                
+const pages = ['About']; //TODO: figure out how to dynamically change the pages available to the user depending on their auth status and acct type
+const settings = ['Account', 'Dashboard', 'Logout'];
 
 function Navbar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -64,17 +51,18 @@ function Navbar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
-
+  
     return (
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                    {/* To change these icons, go here: https://mui.com/material-ui/material-icons/ and select a new one, then replace it lol */}
+                    <AddTaskIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                     <Typography
                         variant="h6"
                         noWrap
-                        component="a"
-                        href="/"
+                        component={Link} 
+                        to="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -85,7 +73,7 @@ function Navbar() {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        CDAM
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -118,18 +106,18 @@ function Navbar() {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                <MenuItem key={page} onClick={handleCloseUserMenu} component={Link} to={page}>
                                     <Typography textAlign="center">{page}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
                     </Box>
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
+                    <AddTaskIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
                     <Typography
                         variant="h5"
                         noWrap
-                        component="a"
-                        href=""
+                        component={Link} 
+                        to="/"
                         sx={{
                             mr: 2,
                             display: { xs: 'flex', md: 'none' },
@@ -141,7 +129,7 @@ function Navbar() {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        CDAM
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
@@ -149,6 +137,8 @@ function Navbar() {
                                 key={page}
                                 onClick={handleCloseNavMenu}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
+                                component={Link} 
+                                to={page}
                             >
                                 {page}
                             </Button>
@@ -179,12 +169,13 @@ function Navbar() {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                    <MenuItem key={setting} onClick={handleCloseUserMenu} component={Link} to={setting}>
                                         <Typography textAlign="center">{setting}</Typography>
                                     </MenuItem>
                                 ))}
                             </Menu>
-                        </Box>}
+                        </Box>
+                    }
                 </Toolbar>
             </Container>
         </AppBar>
