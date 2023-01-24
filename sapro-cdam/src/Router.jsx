@@ -6,6 +6,7 @@ import Layout from "./pages/Layout";
 import Contact from "./pages/Contact";
 import Logout from "./pages/Logout";
 import NoPage from "./pages/NoPage";
+import FileUpload from "./pages/FileUpload";
 import Dashboard from "./pages/Dashboard";
 import App from './App';
 import { Authenticator, useAuthenticator} from '@aws-amplify/ui-react';
@@ -27,6 +28,7 @@ function Router() {
                         <>
                             
                             <Route path="Dashboard" element={<Dashboard />} />
+                            <Route path="File Upload" element={<FileUpload />} />
                         </>
                     }
                     <Route path="contact" element={<Contact />} />
