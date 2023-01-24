@@ -1,9 +1,11 @@
+// React Imports
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import Router from './Router';
 import reportWebVitals from './reportWebVitals';
 
+// Amplify Imports
 import { Amplify } from 'aws-amplify';
 import { Authenticator } from '@aws-amplify/ui-react';
 import awsExports from './aws-exports';
@@ -13,7 +15,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Authenticator.Provider>
     <React.StrictMode>
-      <App />
+      <Router />
     </React.StrictMode>
   </Authenticator.Provider>
 );
