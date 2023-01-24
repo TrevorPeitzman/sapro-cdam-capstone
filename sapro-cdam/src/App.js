@@ -4,6 +4,7 @@
 import logo from './logo.svg';
 import './App.css';
 
+import awsExports from "./aws-exports";
 import React, { useEffect, useState } from 'react'
 import { Amplify, API, Auth, Hub, graphqlOperation, Storage } from 'aws-amplify'
 import { createChecklist } from './graphql/mutations'
@@ -11,7 +12,13 @@ import { listChecklists } from './graphql/queries'
 import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
-import awsExports from "./aws-exports";
+// Snackbar stuff
+import MuiAlert from '@mui/material/Alert';
+import { Snackbar } from '@mui/material';
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
 Amplify.configure(awsExports);
 
 const initialState = { name: '', description: '' };
@@ -44,7 +51,7 @@ export default function App({ signOut, user }) {
       attributes.email = attributes.email.toLowerCase();
 
       // This is how we check if the email is from an approved domain
-      console.log("I'm in the email checker");
+      console.log("I'm in the email checker"); //TODO: Remove this logging
       if (/^\w+([.-]?\w+)*@usna.edu$/.test(attributes.email)) {
         console.log("email check success");
         return Auth.signUp({
@@ -55,9 +62,13 @@ export default function App({ signOut, user }) {
       } else {
         console.log("email check fail");
         // TODO: fix this to make it a bit cleaner of an error than a popup message
-        alert("This email domain is not permitted. Please sign up with a permitted email.");
+        // alert("This email domain is not permitted. Please sign up with a permitted email.");
+        <Snackbar open={true} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+          <Alert severity="error" sx={{ width: '100%' }}>
+            This email domain is not permitted. Please sign up with a permitted email.
+          </Alert>
+        </Snackbar>
         attributes.email = "nope";
-        
         return Auth.signUp({
           username,
           password,
@@ -99,29 +110,62 @@ export default function App({ signOut, user }) {
     const file = e.target.files[0];
     try {
       await Storage.put(file.name, file);
+      <Snackbar open={true} anchorOrigin={{ vertical: "top", horizontal: "center" }} message="Upload Successful" autoHideDuration={6000} />
     } catch (error) {
       console.log("Error uploading file: ", error);
+      <Snackbar open={true} anchorOrigin={{ vertical: "top", horizontal: "center" }} message="Upload Unsuccessful" />
     }
   }
 
-  async function listFiles(){
+  async function listFiles() {
     const files = await Storage.list('')
     let signedFiles = files.map(f => Storage.get(f.key))
     signedFiles = await Promise.all(signedFiles)
     console.log('signedFiles: ', signedFiles)
     console.log('Files: ', files)
-    setFileState([...filesState, signedFiles, files])
+    setFileState([...filesState, files])
+
+    // {files.map((f) => (
+    //   <Button
+    //       key={f.key}
+    //       sx={{ my: 2, color: 'white', display: 'block' }}
+    //       component="a" 
+    //       to={signedFiles}
+    //   >
+    //       {f.key}
+    //   </Button>
+    // ))}
   }
 
+  async function downloadBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || 'download';
+    const clickHandler = () => {
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        a.removeEventListener('click', clickHandler);
+      }, 150);
+    };
+    a.addEventListener('click', clickHandler, false);
+    a.click();
+    return a;
+  }
+
+  async function download(fileKey) {
+    const result = await Storage.get(fileKey, { download: true });
+    downloadBlob(result.Body, 'filename');
+  }
 
   return (
     <div style={styles.container}>
       <Authenticator services={services} components={components} initialState="signIn">
-        {({ signOut }) => <button onClick={signOut}>Sign out</button>}
+        {/* {({ signOut }) => <button onClick={signOut}>Sign out</button>} */}
       </Authenticator>
 
       {/*TODO: this is kinda a shitty way of discovering if the user is authenticated, potentially change this */}
-      {route === 'authenticated' && 
+      {route === 'authenticated' &&
         <>
           <h2>SAPRO-CDAM Checklists</h2>
           <input
@@ -137,24 +181,24 @@ export default function App({ signOut, user }) {
             placeholder="Checklist Owner"
           />
           <button style={styles.button} onClick={addChecklist}>Create New Checklist</button>
-          <div style={styles.container}>
+          {/* <div style={styles.container}>
             <input type="file" onChange={uploadFile} />
             <button style={styles.button} onClick={uploadFile}>Upload File</button>
             <button style={styles.button} onClick={listFiles}>List Files</button>
-          </div>
+          </div> */}
           <div>
             {
               console.log(filesState, "foo") //TODO: probably need to reset fileState every time the loop runs so that we don't end up with repetition
             }
             {
-              // filesState.map((links, files) => (
-              //   // <img
-              //   //   key={i}
-              //   //   src={file} //TODO: FIX THJIS SHIXXXX
-              //   //   style={{height: 300}}
-              //   // />
-              //   <a href={links}>{files.key}</a>
-              // ))
+              filesState.map((files) => (
+                // <img
+                //   key={i}
+                //   src={file} //TODO: FIX THJIS SHIXXXX
+                //   style={{height: 300}}
+                // />
+                <a href="/">{files.key}</a>
+              ))
             }
           </div>
           {
