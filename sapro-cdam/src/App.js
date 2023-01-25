@@ -63,11 +63,11 @@ export default function App({ signOut, user }) {
         console.log("email check fail");
         // TODO: fix this to make it a bit cleaner of an error than a popup message
         // alert("This email domain is not permitted. Please sign up with a permitted email.");
-        <Snackbar open={true} anchorOrigin={{vertical: "top", horizontal: "center"}}>
-          <Alert severity="error" sx={{ width: '100%' }}>
-            This email domain is not permitted. Please sign up with a permitted email.
-          </Alert>
-        </Snackbar>
+        // <Snackbar open={true} anchorOrigin={{vertical: "top", horizontal: "center"}}>
+          // <Alert severity="error" sx={{ width: '100%' }}>
+          //   This email domain is not permitted. Please sign up with a permitted email.
+          // </Alert>
+        // </Snackbar>
         attributes.email = "nope";
         return Auth.signUp({
           username,
@@ -110,10 +110,10 @@ export default function App({ signOut, user }) {
     const file = e.target.files[0];
     try {
       await Storage.put(file.name, file);
-      <Snackbar open={true} anchorOrigin={{vertical: "top", horizontal: "center"}} message="Upload Successful" autoHideDuration={6000}/>
+      // <Snackbar open={true} anchorOrigin={{vertical: "top", horizontal: "center"}} message="Upload Successful" autoHideDuration={6000}/>
     } catch (error) {
       console.log("Error uploading file: ", error);
-      <Snackbar open={true} anchorOrigin={{vertical: "top", horizontal: "center"}} message="Upload Unsuccessful"/>
+      // <Snackbar open={true} anchorOrigin={{vertical: "top", horizontal: "center"}} message="Upload Unsuccessful"/>
     }
   }
 
