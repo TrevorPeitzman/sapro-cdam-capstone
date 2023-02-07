@@ -6,6 +6,7 @@ import Layout from "./pages/Layout";
 import Contact from "./pages/Contact";
 import Logout from "./pages/Logout";
 import NoPage from "./pages/NoPage";
+import FileUpload from "./pages/FileUpload";
 import Dashboard from "./pages/Dashboard";
 import GenerateReport from "./pages/GenerateReport";
 import App from './App';
