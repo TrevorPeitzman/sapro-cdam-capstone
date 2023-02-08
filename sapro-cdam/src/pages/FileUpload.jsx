@@ -3,7 +3,7 @@ import { Storage } from 'aws-amplify'
 import { styled } from '@mui/material/styles';
 import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/react-mui-fileuploader#readme
 import { Grid, Box, Paper, Button, Snackbar, Alert, Menu, MenuItem, Typography, Container } from '@mui/material';
-import { List, ListItem, ListItemText } from '@mui/material';
+import { List, ListItem, ListItemText, ListItemButton, ListItemIcon, SpeedDialIcon } from '@mui/material';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -90,7 +90,13 @@ export function FileUploadPage() {
                                 <Button onClick={listFiles}>List Files</Button>
                                 {filesInBucket.map((file) => (
                                     <ListItem key={file.key}>
-                                        <ListItemText primary={file.key} />
+                                        {/* <ListItemIcon>
+                                            <SpeedDialIcon />
+                                        </ListItemIcon> */}
+                                        {/* TODO: Need permissions in S3 to be set properly in order for this to work */}
+                                        <ListItemButton component="a" href={"https://sapro-cdam-document-store12606-dev.s3.amazonaws.com/public/" + file.key} target="_blank">
+                                            <ListItemText primary={file.key} />
+                                        </ListItemButton>
                                     </ListItem>
                                 ))}
                             </List>
