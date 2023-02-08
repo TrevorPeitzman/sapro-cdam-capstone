@@ -3,6 +3,7 @@ import { Storage } from 'aws-amplify'
 import { styled } from '@mui/material/styles';
 import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/react-mui-fileuploader#readme
 import { Grid, Box, Paper, Button, Snackbar, Alert, Menu, MenuItem, Typography, Container } from '@mui/material';
+import { List, ListItem, ListItemText } from '@mui/material';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -13,7 +14,8 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export function FileUploadPage() {
-    const [filesToUpload, setFilesToUpload] = useState([])
+    const [filesToUpload, setFilesToUpload] = useState([]);
+    const [filesInBucket, setFilesInBucket] = useState([]);
     const [uploadSuccess, setUploadSuccess] = useState(false)
     const [uploadFailure, setUploadFailure] = useState(false)
 
@@ -49,14 +51,11 @@ export function FileUploadPage() {
         setUploadFailure(false);
     };
 
-    var files = [];
-
     async function listFiles() {
-        await Storage.list('') // for listing ALL files without prefix, pass '' instead. TODO: eventually have this be a command/item-specific directory
-            .then((result) => files = result)
-            .catch((err) => console.log(err));
-        console.log(files);
-        return files;
+        // for listing ALL files without prefix, pass '' instead. TODO: eventually have this be a command/item-specific directory
+        const response = await Storage.list('');
+        setFilesInBucket(response);
+        console.log(response); //TODO: Remove, for debugging only
     }
 
     return (
@@ -87,11 +86,14 @@ export function FileUploadPage() {
                     </Grid>
                     <Grid xs={8}>
                         <Item>
-                            <Button onClick={listFiles}>List Files</Button>
-                            {files.forEach(file => <a>{file.key}</a>)}
-                            {files.map((file) => (
-                                <li>{file}</li>
-                            ))}
+                            <List>
+                                <Button onClick={listFiles}>List Files</Button>
+                                {filesInBucket.map((file) => (
+                                    <ListItem key={file.key}>
+                                        <ListItemText primary={file.key} />
+                                    </ListItem>
+                                ))}
+                            </List>
                         </Item>
                     </Grid>
                 </Grid>
