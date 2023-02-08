@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Storage } from 'aws-amplify'
 import { styled } from '@mui/material/styles';
 import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/react-mui-fileuploader#readme
-import { Grid, Box, Paper, Button, Snackbar, Alert, Menu, MenuItem, Typography } from '@mui/material';
+import { Grid, Box, Paper, Button, Snackbar, Alert, Menu, MenuItem, Typography, Container } from '@mui/material';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -60,7 +60,7 @@ export function FileUploadPage() {
     }
 
     return (
-        <>
+        <Container>
             <Snackbar open={uploadSuccess} anchorOrigin={{ vertical: "top", horizontal: "center" }} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity='success'>Upload Successful</Alert>
             </Snackbar>
@@ -96,7 +96,7 @@ export function FileUploadPage() {
                     </Grid>
                 </Grid>
             </Box>
-        </>
+        </Container>
     )
 }
 
