@@ -21,10 +21,10 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 Amplify.configure(awsExports);
 
-const initialState = { name: '', description: '' };
+const initialState = { commandName: "" };
 
 export default function App({ signOut, user }) {
-  const [formState, setFormState] = useState(initialState)
+  const [formState, setFormState] = useState([])
   const [Checklists, setChecklists] = useState([])
   const [filesState, setFileState] = useState([])
   // const { user, signOut } = useAuthenticator((context) => [context.user])
@@ -96,10 +96,16 @@ export default function App({ signOut, user }) {
 
   async function addChecklist() {
     try {
-      if (!formState.name || !formState.description) return
       const checklist = { ...formState }
+      console.log(checklist)
+      if (!formState.commandName || !formState.id) {
+        console.log("Not enough info supplied to create, try again.") //TODO: fix this so that it is a snackbar or error message popup
+        return
+      }
       setChecklists([...Checklists, checklist])
       setFormState(initialState)
+      document.getElementById("chklst_create").reset()
+      console.log(checklist)
       await API.graphql(graphqlOperation(createChecklist, { input: checklist }))
     } catch (err) {
       console.log('error creating checklist:', err)
@@ -128,7 +134,7 @@ export default function App({ signOut, user }) {
     // {files.map((f) => (
     //   <Button
     //       key={f.key}
-    //       sx={{ my: 2, color: 'white', display: 'block' }}
+    //       sx={{ my: 2, color: 'white', display: 'block' }}123
     //       component="a" 
     //       to={signedFiles}
     //   >
@@ -168,19 +174,32 @@ export default function App({ signOut, user }) {
       {route === 'authenticated' &&
         <>
           <h2>SAPRO-CDAM Checklists</h2>
-          <input
-            onChange={event => setInput('commandName', event.target.value)}
-            style={styles.input}
-            value={formState.commandName}
-            placeholder="Command Name"
-          />
-          <input
-            onChange={event => setInput('responsibleParty', event.target.value)}
-            style={styles.input}
-            value={formState.responsibleParty}
-            placeholder="Checklist Owner"
-          />
+          <form id="chklst_create">
+            <input
+              onChange={event => setInput('commandName', event.target.value)}
+              style={styles.input}
+              value={formState.commandName}
+              placeholder="Command Name"
+            />
+            <input
+              onChange={event => setInput('responsibleParty', event.target.value)}
+              style={styles.input}
+              value={formState.responsibleParty}
+              placeholder="Checklist Owner"
+            />
+            <input
+              onChange={event => setInput('id', event.target.value)}
+              style={styles.input}
+              value={formState.id}
+              placeholder="ID"
+            />
+          </form>
           <button style={styles.button} onClick={addChecklist}>Create New Checklist</button>
+
+          <button onClick={fetchChecklists}>View Checklists</button>
+          {
+            // console.log(Checklists)
+          }
           {/* <div style={styles.container}>
             <input type="file" onChange={uploadFile} />
             <button style={styles.button} onClick={uploadFile}>Upload File</button>
@@ -188,7 +207,7 @@ export default function App({ signOut, user }) {
           </div> */}
           <div>
             {
-              console.log(filesState, "foo") //TODO: probably need to reset fileState every time the loop runs so that we don't end up with repetition
+              // console.log(filesState, "foo") //TODO: probably need to reset fileState every time the loop runs so that we don't end up with repetition
             }
             {
               filesState.map((files) => (
@@ -204,7 +223,8 @@ export default function App({ signOut, user }) {
           {
             Checklists.map((checklist, index) => (
               <div key={checklist.id ? checklist.id : index} style={styles.checklist}>
-                <p style={styles.checklistName}>{checklist.commandName}</p>
+                {/* TODO: Potentially build in a handler page so that we don't have to have a unique page for every checklist */}
+                <a href={checklist.id}><p style={styles.checklistName}>{checklist.commandName}</p></a>
                 <p style={styles.checklistDescription}>{checklist.responsibleParty}</p>
               </div>
             ))
