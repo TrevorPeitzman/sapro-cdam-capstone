@@ -29,7 +29,7 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 // };
                 
 const pages = ['About', 'Contact']; //TODO: figure out how to dynamically change the pages available to the user depending on their auth status and acct type
-const settings = ['Account', 'Dashboard', 'File Upload', 'Logout'];
+const settings = ['Account', 'Dashboard', 'File Upload', 'Admin', 'Logout'];
 
 function Navbar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
