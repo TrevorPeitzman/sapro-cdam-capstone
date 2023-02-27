@@ -98,7 +98,7 @@ export default function App({ signOut, user }) {
     try {
       const checklist = { ...formState }
       console.log(checklist)
-      if (!formState.commandName || !formState.id) {
+      if (!formState.commandName) {
         console.log("Not enough info supplied to create, try again.") //TODO: fix this so that it is a snackbar or error message popup
         return
       }
