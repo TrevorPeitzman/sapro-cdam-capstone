@@ -16,6 +16,7 @@ export const createChecklist = /* GraphQL */ `
           id
           itemName
           completion
+          mandatory
           description
           reference
           tier
@@ -46,6 +47,7 @@ export const updateChecklist = /* GraphQL */ `
           id
           itemName
           completion
+          mandatory
           description
           reference
           tier
@@ -76,6 +78,7 @@ export const deleteChecklist = /* GraphQL */ `
           id
           itemName
           completion
+          mandatory
           description
           reference
           tier
@@ -111,6 +114,7 @@ export const createChecklistItem = /* GraphQL */ `
       }
       itemName
       completion
+      mandatory
       description
       reference
       tier
@@ -151,6 +155,7 @@ export const updateChecklistItem = /* GraphQL */ `
       }
       itemName
       completion
+      mandatory
       description
       reference
       tier
@@ -191,6 +196,7 @@ export const deleteChecklistItem = /* GraphQL */ `
       }
       itemName
       completion
+      mandatory
       description
       reference
       tier
@@ -230,6 +236,7 @@ export const createSupportingDocument = /* GraphQL */ `
         }
         itemName
         completion
+        mandatory
         description
         reference
         tier
@@ -267,6 +274,7 @@ export const updateSupportingDocument = /* GraphQL */ `
         }
         itemName
         completion
+        mandatory
         description
         reference
         tier
@@ -304,6 +312,7 @@ export const deleteSupportingDocument = /* GraphQL */ `
         }
         itemName
         completion
+        mandatory
         description
         reference
         tier
