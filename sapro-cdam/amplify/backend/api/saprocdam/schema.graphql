@@ -15,6 +15,7 @@ type ChecklistItem @model {
   checklist: Checklist @belongsTo
   itemName: String!
   completion: Boolean!
+  mandatory: Boolean
   description: String
   reference: String
   tier: Int
@@ -26,4 +27,8 @@ type SupportingDocument @model {
   id: ID!
   checklistItem: ChecklistItem @belongsTo
   filename: String
+}
+
+type Query {
+  checklists:[Checklist]
 }
