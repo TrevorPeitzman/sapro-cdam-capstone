@@ -1,26 +1,26 @@
 export type AmplifyDependentResourcesAttributes = {
-  "api": {
-    "saprocdam": {
-      "GraphQLAPIEndpointOutput": "string",
-      "GraphQLAPIIdOutput": "string",
-      "GraphQLAPIKeyOutput": "string"
+    "api": {
+        "saprocdam": {
+            "GraphQLAPIKeyOutput": "string",
+            "GraphQLAPIIdOutput": "string",
+            "GraphQLAPIEndpointOutput": "string"
+        }
+    },
+    "auth": {
+        "saprocdamd49d7079": {
+            "IdentityPoolId": "string",
+            "IdentityPoolName": "string",
+            "UserPoolId": "string",
+            "UserPoolArn": "string",
+            "UserPoolName": "string",
+            "AppClientIDWeb": "string",
+            "AppClientID": "string"
+        }
+    },
+    "storage": {
+        "saproCDAMDocumentStore": {
+            "BucketName": "string",
+            "Region": "string"
+        }
     }
-  },
-  "auth": {
-    "saprocdamd49d7079": {
-      "AppClientID": "string",
-      "AppClientIDWeb": "string",
-      "IdentityPoolId": "string",
-      "IdentityPoolName": "string",
-      "UserPoolArn": "string",
-      "UserPoolId": "string",
-      "UserPoolName": "string"
-    }
-  },
-  "storage": {
-    "saproCDAMDocumentStore": {
-      "BucketName": "string",
-      "Region": "string"
-    }
-  }
 }
