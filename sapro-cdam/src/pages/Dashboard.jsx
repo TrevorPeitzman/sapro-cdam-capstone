@@ -1,8 +1,21 @@
 import React from 'react';
+import { Grid, Box, Container } from '@mui/material';
+import {
+    EditProfile
+} from './ui-components';
+
 
 function Dashboard() {
     return (
-        <h1>this is the User's Dashboard page</h1>
+        <Container>
+            {/* TODO: Needs testing */}
+            {/* <Grid> */}
+            <h1>This is the User's Dashboard page</h1>
+
+            {/* </Grid> */}
+            <EditProfile />
+
+        </Container>
     );
 }
 
