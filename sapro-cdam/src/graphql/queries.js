@@ -1,34 +1,6 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const checklists = /* GraphQL */ `
-  query Checklists {
-    checklists {
-      id
-      commandName
-      responsibleParty
-      percentCompletion
-      checklistItems {
-        items {
-          id
-          itemName
-          completion
-          mandatory
-          description
-          reference
-          tier
-          responsibleParty
-          createdAt
-          updatedAt
-          checklistChecklistItemsId
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const getChecklist = /* GraphQL */ `
   query GetChecklist($id: ID!) {
     getChecklist(id: $id) {
