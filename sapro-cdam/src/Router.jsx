@@ -11,6 +11,7 @@ import FileUpload from "./pages/FileUpload";
 import Dashboard from "./pages/Dashboard";
 import App from './App';
 import { Authenticator, useAuthenticator} from '@aws-amplify/ui-react';
+import CommandDetail from './pages/CommandDetail';
 
 
 
@@ -27,9 +28,9 @@ function Router() {
                     {/* TODO: This will most likely be how we allow certain users routes to certain pages and not to others */}
                     {route === 'authenticated' &&
                         <>
-                            
                             <Route path="Dashboard" element={<Dashboard />} />
                             <Route path="File Upload" element={<FileUpload />} />
+                            <Route path="/CommandDetail/:id" element={<CommandDetail />} />
                         </>
                     }
                     <Route path="about" element={<About />} />
