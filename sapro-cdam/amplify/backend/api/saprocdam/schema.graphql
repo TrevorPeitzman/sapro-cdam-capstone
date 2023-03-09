@@ -1,9 +1,10 @@
 type Checklist @model @auth(rules: [{allow: public}]) {
   id: ID!
   commandName: String!
-  responsibleParty: String
-  percentCompletion: Float
+  commandPOC: String
+  commandPOCEmail: AWSEmail
   checklistItems: [ChecklistItem] @hasMany
+  percentCompletion: Float
 }
 
 type ChecklistItem @model @auth(rules: [{allow: public}]) {
@@ -16,12 +17,14 @@ type ChecklistItem @model @auth(rules: [{allow: public}]) {
   reference: String
   tier: Int
   responsibleParty: String
-  supportingDocuments: [SupportingDocument] @hasMany
+  supportingDocuments: SupportingDocument @hasOne
 }
 
 type SupportingDocument @model @auth(rules: [{allow: public}]) {
   id: ID!
   checklistItem: ChecklistItem @belongsTo
-  filename: String
+  filename: String!
+  fileURL: AWSURL
+  author: String
 }
  

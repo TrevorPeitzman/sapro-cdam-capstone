@@ -1,8 +1,8 @@
 import React from 'react';
 import { Grid, Box, Container } from '@mui/material';
-import {
-    EditProfile
-} from './ui-components';
+// import {
+//     EditProfile
+// } from './ui-components';
 
 
 function Dashboard() {
@@ -13,7 +13,7 @@ function Dashboard() {
             <h1>This is the User's Dashboard page</h1>
 
             {/* </Grid> */}
-            <EditProfile />
+            {/* <EditProfile /> */}
 
         </Container>
     );

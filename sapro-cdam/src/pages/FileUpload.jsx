@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/react-mui-fileuploader#readme
 import { Grid, Box, Paper, Button, Snackbar, Alert, Menu, MenuItem, Typography, Container } from '@mui/material';
 import { List, ListItem, ListItemText, ListItemButton, ListItemIcon, SpeedDialIcon } from '@mui/material';
+import { FileUploader } from '@aws-amplify/ui-react';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -33,7 +34,7 @@ export function FileUploadPage() {
         filesToUpload.forEach((file) => {
             try {
                 setUploadSuccess(true);
-                Storage.put(file.name, file); //TODO: This is supposed to have "await" before it, not sure if not having it will cause problems
+                Storage.put("Test_Loc/" + file.name, file); //TODO: This is supposed to have "await" before it, not sure if not having it will cause problems
                 // TODO: Make it so that the list of files is cleared when an upload is successful
             } catch (error) {
                 setUploadFailure(true);
@@ -73,14 +74,25 @@ export function FileUploadPage() {
                         <Item>
                             <FileUpload
                                 title=""
-                                header='[ Drag and Drop ]'
+                                // header='[ Drag and Drop ]'
+                                header=''
+                                leftLabel=""
+                                rightLabel=""
+                                buttonLabel="click here"
+                                allowedExtensions={['pdf']}
                                 showPlaceholderImage={false}
-                                multiFile={true}
-                                maxUploadFiles={3} //TODO: this is arbitrary, may benefit from an actual limit
+                                multiFile={false}
+                                maxUploadFiles={1} //TODO: this is arbitrary, may benefit from an actual limit
                                 onFilesChange={handleFilesChange}
                                 onError={handleFileUploadError}
                                 onContextReady={(context) => { }}
                             />
+                            {/* <FileUploader
+                                acceptedFileTypes={['.pdf']}
+                                maxFileCount={1}
+                                variation="button"
+                                accessLevel="public"
+                            /> */}
                             <Button onClick={uploadFiles}>Upload</Button>
                         </Item>
                     </Grid>
