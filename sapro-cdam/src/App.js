@@ -12,9 +12,13 @@ import { listChecklists } from './graphql/queries'
 import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
+import {
+  ChecklistCollection, NavBar
+} from './ui-components';
+
 // Snackbar stuff
 import MuiAlert from '@mui/material/Alert';
-import { Snackbar } from '@mui/material';
+import { Snackbar, Box, Container, Typography } from '@mui/material';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -169,64 +173,32 @@ export default function App({ signOut, user }) {
 
       {/*TODO: this is kinda a shitty way of discovering if the user is authenticated, potentially change this */}
       {route === 'authenticated' &&
-        <>
-          <h2>SAPRO-CDAM Checklists</h2>
-          <form id="chklst_create">
-            <input
-              onChange={event => setInput('commandName', event.target.value)}
-              style={styles.input}
-              value={formState.commandName}
-              placeholder="Command Name"
-            />
-            <input
-              onChange={event => setInput('responsibleParty', event.target.value)}
-              style={styles.input}
-              value={formState.responsibleParty}
-              placeholder="Checklist Owner"
-            />
-            <input
-              onChange={event => setInput('id', event.target.value)}
-              style={styles.input}
-              value={formState.id}
-              placeholder="ID"
-            />
-          </form>
-          <button style={styles.button} onClick={addChecklist}>Create New Checklist</button>
+        <main>
+          {/* Hero unit */}
+          <Box
+            sx={{
+              bgcolor: '#D3D3D3',
+              pt: 8,
+              pb: 6,
+            }}
+          >
+            <Container maxWidth="sm">
+              <Typography
+                component="h1"
+                variant="h2"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                Command Search
+              </Typography>
+            </Container>
 
-          <button onClick={fetchChecklists}>View Checklists</button>
-          {
-            // console.log(Checklists)
-          }
-          {/* <div style={styles.container}>
-            <input type="file" onChange={uploadFile} />
-            <button style={styles.button} onClick={uploadFile}>Upload File</button>
-            <button style={styles.button} onClick={listFiles}>List Files</button>
-          </div> */}
-          <div>
-            {
-              // console.log(filesState, "foo") //TODO: probably need to reset fileState every time the loop runs so that we don't end up with repetition
-            }
-            {
-              filesState.map((files) => (
-                // <img
-                //   key={i}
-                //   src={file} //TODO: FIX THJIS SHIXXXX
-                //   style={{height: 300}}
-                // />
-                <a href="/">{files.key}</a>
-              ))
-            }
-          </div>
-          {
-            Checklists.map((checklist, index) => (
-              <div key={checklist.id ? checklist.id : index} style={styles.checklist}>
-                {/* TODO: Potentially build in a handler page so that we don't have to have a unique page for every checklist */}
-                <a href={checklist.id}><p style={styles.checklistName}>{checklist.commandName}</p></a>
-                <p style={styles.checklistDescription}>{checklist.responsibleParty}</p>
-              </div>
-            ))
-          }
-        </>
+            <Container maxWidth="sm" sx={{ pt: 6, pb: 6 }}>
+              <ChecklistCollection />
+            </Container>
+          </Box>
+        </main>
       }
     </Authenticator>
   )
