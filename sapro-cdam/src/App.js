@@ -82,21 +82,21 @@ export default function App({ signOut, user }) {
     },
   }
 
-  useEffect(() => {
-    fetchChecklists()
-  }, [])
+  // useEffect(() => {
+  //   fetchChecklists()
+  // }, [])
 
-  function setInput(key, value) {
-    setFormState({ ...formState, [key]: value })
-  }
+  // function setInput(key, value) {
+  //   setFormState({ ...formState, [key]: value })
+  // }
 
-  async function fetchChecklists() {
-    try {
-      const checklistData = await API.graphql(graphqlOperation(listChecklists))
-      const Checklists = checklistData.data.listChecklists.items
-      setChecklists(Checklists)
-    } catch (err) { console.log('error fetching Checklists') }
-  }
+  // async function fetchChecklists() {
+  //   try {
+  //     const checklistData = await API.graphql(graphqlOperation(listChecklists))
+  //     const Checklists = checklistData.data.listChecklists.items
+  //     setChecklists(Checklists)
+  //   } catch (err) { console.log('error fetching Checklists') }
+  // }
 
   async function addChecklist() {
     try {
