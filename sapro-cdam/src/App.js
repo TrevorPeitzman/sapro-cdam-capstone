@@ -165,10 +165,7 @@ export default function App({ signOut, user }) {
   }
 
   return (
-    <div style={styles.container}>
-      <Authenticator services={services} components={components} initialState="signIn">
-        {/* {({ signOut }) => <button onClick={signOut}>Sign out</button>} */}
-      </Authenticator>
+    <Authenticator services={services} components={components} initialState="signIn">
 
       {/*TODO: this is kinda a shitty way of discovering if the user is authenticated, potentially change this */}
       {route === 'authenticated' &&
@@ -231,7 +228,7 @@ export default function App({ signOut, user }) {
           }
         </>
       }
-    </div>
+    </Authenticator>
   )
 };
 
