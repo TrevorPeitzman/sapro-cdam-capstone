@@ -15,6 +15,7 @@ let i = 0
 
 function CommandDetail() {
     const [command, setCommand] = useState([])
+    const [completions, setCompletions] = useState([])
 
     let params = useParams(); // This is how you collect the information put in the url, in this case the command id
 
@@ -30,6 +31,18 @@ function CommandDetail() {
         } catch (err) { console.log('error fetching Checklists') }
     }
 
+    function toggle(seed) {
+        // console.log("seed: ", seed)
+        // console.log("notseed: ", !seed)
+        return !seed
+    }
+
+    async function submitChanges(id, completion) {
+        try {
+            let model;
+            model = await DataStore.save(Checklist, { id: params.id });
+        } catch (err) { console.log('error pushing value to Checklist') }
+    }
 
     getCommandName();
 
@@ -54,7 +67,35 @@ function CommandDetail() {
                     <Button variant='contained' fullWidth onClick={getCommandName}>Submit All Changes</Button>
                 </Container>
 
-                <ChecklistItemCollection />
+                <ChecklistItemCollection
+                    overrideItems={({ item, index }) => ({
+                        onMouseOver: () => {
+                            if (completions.find(a => a.id === item.id) == null) {
+                                completions.push({
+                                    id: item.id,
+                                    done: item.completion,
+                                })
+                            }
+                            // console.log(completions)
+                        },
+                        overrides: {
+                            "CheckboxField": {
+
+                                onClick: () => {
+                                    const newList = [...completions]
+                                    const clItem = newList.find(
+                                        a => a.id === item.id
+                                    );
+                                    clItem.done = toggle(clItem.done);
+                                    setCompletions(newList);
+
+                                    console.log(completions)
+                                },
+                                label: item.itemName
+                                
+                            }
+                        }
+                    })} />
 
                 {/* <button onClick={getCommandName}>View Checklists</button> */}
 
