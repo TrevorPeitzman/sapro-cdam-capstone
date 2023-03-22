@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { API, graphqlOperation } from 'aws-amplify'
+import React, { useState } from 'react';
 import { Container, Typography, Box, Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { getChecklist } from '../graphql/queries.js'
 import {
     ChecklistItemCollection
 } from '../ui-components';
@@ -13,6 +11,12 @@ import { Link } from '@aws-amplify/ui-react';
 // Somewhat rudimentary mutex...
 let flag = 0
 
+
+
+// TODO: find a way to ensure only the one specific command's checklist shows up, not the same for all
+
+
+
 function CommandDetail() {
     const [command, setCommand] = useState([])
     const [completions, setCompletions] = useState([])
@@ -22,7 +26,7 @@ function CommandDetail() {
     async function getCommandName() {
         try {
             let model;
-            if (flag == 0) {
+            if (flag === 0) {
                 model = await DataStore.query(Checklist, { id: params.id });
                 setCommand(model)
                 flag++
