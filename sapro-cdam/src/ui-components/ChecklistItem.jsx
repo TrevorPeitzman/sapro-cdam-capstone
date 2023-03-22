@@ -13,13 +13,7 @@ import {
 } from "@aws-amplify/ui-react/internal";
 import { Button, CheckboxField, Flex, Text } from "@aws-amplify/ui-react";
 export default function ChecklistItem(props) {
-  const {
-    itemDetails = "Default Checklist Item",
-    test,
-    checklistItem,
-    overrides: overridesProp,
-    ...rest
-  } = props;
+  const { checklistItem, overrides: overridesProp, ...rest } = props;
   const variants = [
     {
       overrides: {
@@ -98,14 +92,14 @@ export default function ChecklistItem(props) {
         <CheckboxField
           width="unset"
           height="unset"
-          label="Checklist item is the title"
+          label={checklistItem?.itemName}
           justifyContent="flex-start"
           padding="5px 5px 5px 5px"
           overflow="hidden"
           shrink="0"
           alignSelf="stretch"
           size="large"
-          defaultChecked={false}
+          defaultChecked={checklistItem?.completion}
           isDisabled={false}
           labelPosition="end"
           {...getOverrideProps(overrides, "CheckboxField")}
@@ -272,7 +266,7 @@ export default function ChecklistItem(props) {
             position="relative"
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
-            children="This is the Owner/Subcategory of the checklist item"
+            children={checklistItem?.responsibleParty}
             {...getOverrideProps(overrides, "owner")}
           ></Text>
           <Text
@@ -293,7 +287,7 @@ export default function ChecklistItem(props) {
             position="relative"
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
-            children="This is the tier of the checklist item"
+            children={checklistItem?.tier}
             {...getOverrideProps(overrides, "tier")}
           ></Text>
           <Text
@@ -314,7 +308,7 @@ export default function ChecklistItem(props) {
             position="relative"
             padding="0px 0px 0px 0px"
             whiteSpace="pre-wrap"
-            children="This is the Reference & Paragraph"
+            children={checklistItem?.reference}
             {...getOverrideProps(overrides, "reference")}
           ></Text>
         </Flex>

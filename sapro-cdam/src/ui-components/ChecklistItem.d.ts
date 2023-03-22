@@ -27,8 +27,6 @@ export declare type ChecklistItemOverridesProps = {
     reference?: PrimitiveOverrideProps<TextProps>;
 } & EscapeHatchProps;
 export declare type ChecklistItemProps = React.PropsWithChildren<Partial<FlexProps> & {
-    itemDetails?: String;
-    test?: String;
     checklistItem?: ChecklistItem;
 } & {
     view?: "Default" | "MoreDetails";
