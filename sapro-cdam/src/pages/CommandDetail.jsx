@@ -7,11 +7,11 @@ import {
     ChecklistItemCollection
 } from '../ui-components';
 import { DataStore } from '@aws-amplify/datastore';
-import { Checklist } from '../models';
+import { Checklist, ChecklistItem } from '../models';
 import { Link } from '@aws-amplify/ui-react';
 
 // Somewhat rudimentary mutex...
-let i = 0
+let flag = 0
 
 function CommandDetail() {
     const [command, setCommand] = useState([])
@@ -22,10 +22,10 @@ function CommandDetail() {
     async function getCommandName() {
         try {
             let model;
-            if (i == 0) {
+            if (flag == 0) {
                 model = await DataStore.query(Checklist, { id: params.id });
                 setCommand(model)
-                i++
+                flag++
             }
             // console.log(model.id) //TODO: this executes three times for some reason...  this may waste money unnecessarily
         } catch (err) { console.log('error fetching Checklists') }
@@ -37,11 +37,18 @@ function CommandDetail() {
         return !seed
     }
 
-    async function submitChanges(id, completion) {
+    async function submitChanges() {
         try {
-            let model;
-            model = await DataStore.save(Checklist, { id: params.id });
-        } catch (err) { console.log('error pushing value to Checklist') }
+            /* Models in DataStore are immutable. To update a record you must use the copyOf function
+                to apply updates to the item’s fields rather than mutating the instance directly */
+            for (let i = 0; i < completions.length; i++) {
+                let itemToUpdate = await DataStore.query(ChecklistItem, { id: completions[i].id });
+                await DataStore.save(ChecklistItem.copyOf(itemToUpdate, item => {
+                    // Update the values on {item} variable to update DataStore entry
+                    item.completion = completions[i].done;
+                }));
+            }
+        } catch (err) { console.log('error pushing value to Checklist: ', err) }
     }
 
     getCommandName();
@@ -64,7 +71,7 @@ function CommandDetail() {
                 </Typography>
 
                 <Container maxWidth="xs" sx={{ bgcolor: '#D3D3D3', pt: 2, pb: 4, alignItems: 'center' }}>
-                    <Button variant='contained' fullWidth onClick={getCommandName}>Submit All Changes</Button>
+                    <Button variant='contained' fullWidth onClick={submitChanges}>Submit All Changes</Button>
                 </Container>
 
                 <ChecklistItemCollection
@@ -74,6 +81,7 @@ function CommandDetail() {
                                 completions.push({
                                     id: item.id,
                                     done: item.completion,
+                                    obj: item
                                 })
                             }
                             // console.log(completions)
@@ -91,8 +99,9 @@ function CommandDetail() {
 
                                     console.log(completions)
                                 },
-                                label: item.itemName
-                                
+                                label: item.itemName,
+                                defaultChecked: item.completion
+
                             }
                         }
                     })} />
