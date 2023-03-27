@@ -1,17 +1,17 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./pages/Layout";
-// import Home from "./pages/Home";
-// import Blogs from "./pages/Blogs";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Logout from "./pages/Logout";
-import NoPage from "./pages/NoPage";
-import FileUpload from "./pages/FileUpload";
-import Dashboard from "./pages/Dashboard";
+import Layout from "./Layout";
+// import Home from "./Home";
+// import Blogs from "./Blogs";
+import About from "./About";
+import Contact from "./Contact";
+import Logout from "./Logout";
+import NoPage from "./NoPage";
+import FileUpload from "./FileUpload";
+import Dashboard from "./Dashboard";
 import App from './App';
 import { Authenticator, useAuthenticator} from '@aws-amplify/ui-react';
-import CommandDetail from './pages/CommandDetail';
+import CommandDetail from './CommandDetail';
 
 
 

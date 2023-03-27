@@ -3,9 +3,9 @@ import { Container, Typography, Box, Button } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
 import {
     ChecklistItemCollection
-} from '../ui-components';
+} from './ui-components';
 import { DataStore } from '@aws-amplify/datastore';
-import { Checklist, ChecklistItem } from '../models';
+import { Checklist, ChecklistItem } from './models';
 import { Link } from '@aws-amplify/ui-react';
 import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/react-mui-fileuploader#readme
 
