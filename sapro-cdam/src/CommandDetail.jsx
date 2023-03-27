@@ -22,9 +22,9 @@ let flag = 0
 function CommandDetail() {
     const [command, setCommand] = useState([])
     const [completions, setCompletions] = useState([])
-    const [params] = useSearchParams()
+    // const [params] = useSearchParams()
 
-    // let params = useParams(); // This is how you collect the information put in the url, in this case the command id
+    let params = useParams(); // This is how you collect the information put in the url, in this case the command id
 
     async function getCommandName() {
         try {
@@ -120,7 +120,6 @@ function CommandDetail() {
             </Container>
 
         </Box>
-        // </div>
     );
 }
 

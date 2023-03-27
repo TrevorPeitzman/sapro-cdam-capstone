@@ -62,7 +62,7 @@ function Navbar() {
                         variant="h6"
                         noWrap
                         component={Link} 
-                        to="/"
+                        to="/sapro-cdam-capstone/"
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
