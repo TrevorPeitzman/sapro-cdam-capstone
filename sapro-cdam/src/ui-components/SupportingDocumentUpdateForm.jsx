@@ -14,7 +14,7 @@ import { DataStore } from "aws-amplify";
 export default function SupportingDocumentUpdateForm(props) {
   const {
     id: idProp,
-    supportingDocument,
+    supportingDocument: supportingDocumentModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -42,16 +42,16 @@ export default function SupportingDocumentUpdateForm(props) {
     setErrors({});
   };
   const [supportingDocumentRecord, setSupportingDocumentRecord] =
-    React.useState(supportingDocument);
+    React.useState(supportingDocumentModelProp);
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
         ? await DataStore.query(SupportingDocument, idProp)
-        : supportingDocument;
+        : supportingDocumentModelProp;
       setSupportingDocumentRecord(record);
     };
     queryData();
-  }, [idProp, supportingDocument]);
+  }, [idProp, supportingDocumentModelProp]);
   React.useEffect(resetStateValues, [supportingDocumentRecord]);
   const validations = {
     filename: [{ type: "Required" }],
@@ -63,9 +63,10 @@ export default function SupportingDocumentUpdateForm(props) {
     currentValue,
     getDisplayValue
   ) => {
-    const value = getDisplayValue
-      ? getDisplayValue(currentValue)
-      : currentValue;
+    const value =
+      currentValue && getDisplayValue
+        ? getDisplayValue(currentValue)
+        : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -221,7 +222,7 @@ export default function SupportingDocumentUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || supportingDocument)}
+          isDisabled={!(idProp || supportingDocumentModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -233,7 +234,7 @@ export default function SupportingDocumentUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || supportingDocument) ||
+              !(idProp || supportingDocumentModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

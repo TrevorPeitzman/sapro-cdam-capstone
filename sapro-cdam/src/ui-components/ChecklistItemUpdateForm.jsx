@@ -20,7 +20,7 @@ import { DataStore } from "aws-amplify";
 export default function ChecklistItemUpdateForm(props) {
   const {
     id: idProp,
-    checklistItem,
+    checklistItem: checklistItemModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -63,17 +63,18 @@ export default function ChecklistItemUpdateForm(props) {
     setResponsibleParty(cleanValues.responsibleParty);
     setErrors({});
   };
-  const [checklistItemRecord, setChecklistItemRecord] =
-    React.useState(checklistItem);
+  const [checklistItemRecord, setChecklistItemRecord] = React.useState(
+    checklistItemModelProp
+  );
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
         ? await DataStore.query(ChecklistItem, idProp)
-        : checklistItem;
+        : checklistItemModelProp;
       setChecklistItemRecord(record);
     };
     queryData();
-  }, [idProp, checklistItem]);
+  }, [idProp, checklistItemModelProp]);
   React.useEffect(resetStateValues, [checklistItemRecord]);
   const validations = {
     itemName: [{ type: "Required" }],
@@ -89,9 +90,10 @@ export default function ChecklistItemUpdateForm(props) {
     currentValue,
     getDisplayValue
   ) => {
-    const value = getDisplayValue
-      ? getDisplayValue(currentValue)
-      : currentValue;
+    const value =
+      currentValue && getDisplayValue
+        ? getDisplayValue(currentValue)
+        : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -387,7 +389,7 @@ export default function ChecklistItemUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || checklistItem)}
+          isDisabled={!(idProp || checklistItemModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -399,7 +401,7 @@ export default function ChecklistItemUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || checklistItem) ||
+              !(idProp || checklistItemModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

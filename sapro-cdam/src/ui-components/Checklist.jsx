@@ -15,7 +15,7 @@ export default function Checklist(props) {
   const { checklist, overrides, ...rest } = props;
   const buttonOnClick = useNavigateAction({
     type: "url",
-    url: `${"CommandDetail/"}${checklist?.id}`,
+    url: `${"/CommandDetail?id="}${checklist?.id}`,
   });
   return (
     <Flex
