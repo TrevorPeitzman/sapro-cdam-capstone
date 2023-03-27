@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/sapro-cdam-capstone/static/css/main.124d6ca3.css",
-    "main.js": "/sapro-cdam-capstone/static/js/main.2c50860a.js",
+    "main.js": "/sapro-cdam-capstone/static/js/main.6b26da34.js",
     "static/js/787.40f5c3cc.chunk.js": "/sapro-cdam-capstone/static/js/787.40f5c3cc.chunk.js",
     "static/media/logo.svg": "/sapro-cdam-capstone/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/sapro-cdam-capstone/index.html",
     "main.124d6ca3.css.map": "/sapro-cdam-capstone/static/css/main.124d6ca3.css.map",
-    "main.2c50860a.js.map": "/sapro-cdam-capstone/static/js/main.2c50860a.js.map",
+    "main.6b26da34.js.map": "/sapro-cdam-capstone/static/js/main.6b26da34.js.map",
     "787.40f5c3cc.chunk.js.map": "/sapro-cdam-capstone/static/js/787.40f5c3cc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.124d6ca3.css",
-    "static/js/main.2c50860a.js"
+    "static/js/main.6b26da34.js"
   ]
 }
