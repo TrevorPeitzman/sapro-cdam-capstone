@@ -30,7 +30,8 @@ function Router() {
                         <>
                             <Route path="Dashboard" element={<Dashboard />} />
                             <Route path="File Upload" element={<FileUpload />} />
-                            <Route path="/CommandDetail/:id" element={<CommandDetail />} />
+                            {/* <Route path="/CommandDetail/:id" element={<CommandDetail />} /> This was the old way to have the id be a link to a page*/}
+                            <Route path="CommandDetail" element={<CommandDetail />} />
                         </>
                     }
                     <Route path="about" element={<About />} />

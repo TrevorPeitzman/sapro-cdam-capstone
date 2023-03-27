@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Container, Typography, Box, Button } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
     ChecklistItemCollection
 } from '../ui-components';
 import { DataStore } from '@aws-amplify/datastore';
 import { Checklist, ChecklistItem } from '../models';
 import { Link } from '@aws-amplify/ui-react';
+import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/react-mui-fileuploader#readme
+
 
 // Somewhat rudimentary mutex...
 let flag = 0
@@ -20,14 +22,15 @@ let flag = 0
 function CommandDetail() {
     const [command, setCommand] = useState([])
     const [completions, setCompletions] = useState([])
+    const [params] = useSearchParams()
 
-    let params = useParams(); // This is how you collect the information put in the url, in this case the command id
+    // let params = useParams(); // This is how you collect the information put in the url, in this case the command id
 
     async function getCommandName() {
         try {
             let model;
             if (flag === 0) {
-                model = await DataStore.query(Checklist, { id: params.id });
+                model = await DataStore.query(Checklist, { id: params.get("id") });
                 setCommand(model)
                 flag++
             }
@@ -45,6 +48,7 @@ function CommandDetail() {
         try {
             /* Models in DataStore are immutable. To update a record you must use the copyOf function
                 to apply updates to the item’s fields rather than mutating the instance directly */
+                // Nicely, this handles the empty list 
             for (let i = 0; i < completions.length; i++) {
                 let itemToUpdate = await DataStore.query(ChecklistItem, { id: completions[i].id });
                 await DataStore.save(ChecklistItem.copyOf(itemToUpdate, item => {
