@@ -6,6 +6,9 @@ import { Grid, Box, Paper, Button, Snackbar, Alert, Menu, MenuItem, Typography, 
 import { List, ListItem, ListItemText, ListItemButton, ListItemIcon, SpeedDialIcon } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FileUploader } from '@aws-amplify/ui-react';
+import { DataStore } from '@aws-amplify/datastore';
+import { ChecklistItem } from '../models';
+import { Link } from '@aws-amplify/ui-react';
 
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -17,6 +20,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 let flag = 0
 
+// This is the old FileUpload page!
 export function FileUploadPage() {
     const [filesToUpload, setFilesToUpload] = useState([]);
     const [filesInBucket, setFilesInBucket] = useState([]);
@@ -30,11 +34,13 @@ export function FileUploadPage() {
         try {
             let model;
             if (flag === 0) {
-                model = await DataStore.query(Checklist, { id: params.id });
-                setCommand(model)
+                model = await DataStore.query(ChecklistItem, { id: params.itemID });
+                // model = await DataStore.query(ChecklistItem);
+                setItemDetails(model)
                 flag++
             }
-            // console.log(model.id) //TODO: this executes three times for some reason...  this may waste money unnecessarily
+            console.log(model) //TODO: this executes three times for some reason...  this may waste money unnecessarily
+            // console.log(params.id) //TODO: this executes three times for some reason...  this may waste money unnecessarily
         } catch (err) { console.log('error fetching Checklists') }
     }
 
@@ -52,7 +58,7 @@ export function FileUploadPage() {
         filesToUpload.forEach((file) => {
             try {
                 setUploadSuccess(true);
-                Storage.put("Test_Loc/" + file.name, file); //TODO: This is supposed to have "await" before it, not sure if not having it will cause problems
+                Storage.put(params.id + "/" + params.itemID + "/" + file.name, file); //TODO: This is supposed to have "await" before it, not sure if not having it will cause problems
                 // TODO: Make it so that the list of files is cleared when an upload is successful
             } catch (error) {
                 setUploadFailure(true);
@@ -81,6 +87,10 @@ export function FileUploadPage() {
 
     return (
         <Container>
+            <Typography variant="h4" component="h3" gutterBottom sx={{ textAlign: 'center' }} >
+                {itemDetails.itemName}
+            </Typography>
+
             <Snackbar open={uploadSuccess} anchorOrigin={{ vertical: "top", horizontal: "center" }} autoHideDuration={6000} onClose={handleClose}>
                 <Alert onClose={handleClose} severity='success'>Upload Successful</Alert>
             </Snackbar>
@@ -89,13 +99,38 @@ export function FileUploadPage() {
                 <Alert onClose={handleClose} severity='error'>Upload Failed! Try Again.</Alert>
             </Snackbar>
             <Box sx={{ flexGrow: 1, padding: 2 }}>
+
+                <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
+                    Details: {itemDetails.description}
+                </Typography>
+
+                <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
+                    Responsible Party: {itemDetails.responsibleParty}
+                </Typography>
+
+                <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
+                    Reference: {itemDetails.reference}
+                </Typography>
+                
+                <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
+                    Tier: {itemDetails.tier}
+                </Typography>
+
+                <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
+                    Completion: {itemDetails.completion}
+                </Typography>
+
+                <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
+                    Last Updated: {itemDetails.updatedAt}
+                </Typography>
+
                 <Grid container spacing={0}>
                     <Grid xs>
                         <Item>
                             <FileUpload
                                 title=""
-                                // header='[ Drag and Drop ]'
-                                header=''
+                                header='[ Drag and Drop ]'
+                                // header=''
                                 leftLabel=""
                                 rightLabel=""
                                 buttonLabel="click here"
