@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Typography, Box, Button } from '@mui/material';
+import { Container, Typography, Box, Button, css } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import {
     ChecklistItemCollection
@@ -83,6 +83,8 @@ function CommandDetail() {
 
                 <ChecklistItemCollection
                     overrideItems={({ item, index }) => ({
+                        //TODO: this works great as proof of concept, but it doesn't actually *remove* the checklist items that this command shouldn't have access to
+                        display: item.checklist.id != command.id ? 'none' : 'flex', 
                         onMouseOver: () => {
                             if (completions.find(a => a.id === item.id) == null) {
                                 completions.push({
