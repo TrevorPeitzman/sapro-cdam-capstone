@@ -13,12 +13,6 @@ import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/rea
 // Somewhat rudimentary mutex...
 let flag = 0
 
-
-
-// TODO: find a way to ensure only the one specific command's checklist shows up, not the same for all
-
-
-
 function CommandDetail() {
     const [command, setCommand] = useState([])
     const [completions, setCompletions] = useState([])
@@ -38,8 +32,6 @@ function CommandDetail() {
     }
 
     function toggle(seed) {
-        // console.log("seed: ", seed)
-        // console.log("notseed: ", !seed)
         return !seed
     }
 
@@ -93,7 +85,6 @@ function CommandDetail() {
                                     obj: item
                                 })
                             }
-                            // console.log(completions)
                         },
                         overrides: {
                             "CheckboxField": {
@@ -111,17 +102,23 @@ function CommandDetail() {
                                 label: item.itemName,
                                 defaultChecked: item.completion
 
+                            },
+                            // Not sure why these aren't working out of the box.... will look into soon
+                            "owner": {
+                                children: item.responsibleParty
+                            },
+                            "tier": {
+                                children: item.tier
+                            },
+                            "reference": {
+                                children: item.reference
                             }
                         }
                     })} />
 
-                {/* <button onClick={getCommandName}>View Checklists</button> */}
-
-
             </Container>
 
         </Box>
-        // </div>
     );
 }
 
