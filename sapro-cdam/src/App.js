@@ -11,6 +11,7 @@ import { createChecklist } from './graphql/mutations'
 import { listChecklists } from './graphql/queries'
 import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
+import { useNavigate } from 'react-router-dom';
 
 import {
   ChecklistCollection, NavBar
@@ -33,6 +34,8 @@ export default function App({ signOut, user }) {
   const [filesState, setFileState] = useState([])
   // const { user, signOut } = useAuthenticator((context) => [context.user])
   const { route } = useAuthenticator(context => [context.route])
+
+  const nav = useNavigate()
 
   const components = {
     Header() {
@@ -195,7 +198,19 @@ export default function App({ signOut, user }) {
             </Container>
 
             <Container maxWidth="sm" sx={{ pt: 6, pb: 6 }}>
-              <ChecklistCollection />
+              <ChecklistCollection
+                overrideItems={({ item }) => ({
+                  overrides: {
+                    "Button": {
+                      onClick: () => {
+                        console.log(item.id)
+                        nav("CommandDetail/" + item.id)
+                      }
+                    }
+                  }
+                })
+                }
+              />
             </Container>
           </Box>
         </main>
