@@ -24,13 +24,13 @@ function Router() {
         <BrowserRouter>
             <Routes>
                 <Route path="/sapro-cdam-capstone/" element={<Layout />}>
-                    <Route path="/sapro-cdam-capstone/" element={<App />} />
+                    <Route index element={<App />} />
                     {/* TODO: This will most likely be how we allow certain users routes to certain pages and not to others */}
                     {route === 'authenticated' &&
                         <>
                             <Route path="Dashboard" element={<Dashboard />} />
                             <Route path="File Upload" element={<FileUpload />} />
-                            <Route path="/CommandDetail/:id" element={<CommandDetail />} /> {/*This was the old way to have the id be a link to a page*/}
+                            <Route path="CommandDetail/:id" element={<CommandDetail />} /> {/*This was the old way to have the id be a link to a page*/}
                             {/* <Route path="CommandDetail" element={<CommandDetail />} /> */}
                         </>
                     }

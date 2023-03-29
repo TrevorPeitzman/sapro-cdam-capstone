@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Typography, Box, Button } from '@mui/material';
-import { useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
     ChecklistItemCollection
 } from './ui-components';
@@ -30,7 +30,8 @@ function CommandDetail() {
         try {
             let model;
             if (flag === 0) {
-                model = await DataStore.query(Checklist, { id: params.get("id") });
+                // model = await DataStore.query(Checklist, { id: params.get("id") });
+                model = await DataStore.query(Checklist, { id: params.id });
                 setCommand(model)
                 flag++
             }
