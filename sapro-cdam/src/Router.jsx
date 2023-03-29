@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./pages/Layout";
 import About from "./pages/About";
+import Admin from "./pages/Admin";
 import Contact from "./pages/Contact";
 import Logout from "./pages/Logout";
 import NoPage from "./pages/NoPage";
@@ -29,6 +30,7 @@ function Router() {
                             <Route path="Dashboard" element={<Dashboard />} />
                             <Route path="CommandDetail/:id" element={<CommandDetail />} />
                             <Route path="CommandDetail/:id/:itemID" element={<ItemDetails />} />
+                            <Route path="Admin" element={<Admin />} />
                         </>
                     }
                     <Route path="about" element={<About />} />
