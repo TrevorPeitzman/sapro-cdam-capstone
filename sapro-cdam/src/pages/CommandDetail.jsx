@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Typography, Box, Button } from '@mui/material';
-import { useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
     ChecklistItemCollection
 } from '../ui-components';
@@ -22,15 +22,14 @@ let flag = 0
 function CommandDetail() {
     const [command, setCommand] = useState([])
     const [completions, setCompletions] = useState([])
-    const [params] = useSearchParams()
 
-    // let params = useParams(); // This is how you collect the information put in the url, in this case the command id
+    let params = useParams(); // This is how you collect the information put in the url, in this case the command id
 
     async function getCommandName() {
         try {
             let model;
             if (flag === 0) {
-                model = await DataStore.query(Checklist, { id: params.get("id") });
+                model = await DataStore.query(Checklist, { id: params.id });
                 setCommand(model)
                 flag++
             }
@@ -48,7 +47,7 @@ function CommandDetail() {
         try {
             /* Models in DataStore are immutable. To update a record you must use the copyOf function
                 to apply updates to the item’s fields rather than mutating the instance directly */
-                // Nicely, this handles the empty list 
+            // Nicely, this handles the empty list 
             for (let i = 0; i < completions.length; i++) {
                 let itemToUpdate = await DataStore.query(ChecklistItem, { id: completions[i].id });
                 await DataStore.save(ChecklistItem.copyOf(itemToUpdate, item => {
