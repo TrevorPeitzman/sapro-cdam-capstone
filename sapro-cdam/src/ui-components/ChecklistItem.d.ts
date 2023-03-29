@@ -14,8 +14,7 @@ export declare type ChecklistItemOverridesProps = {
     "OG ChecklistItem35702815"?: PrimitiveOverrideProps<FlexProps>;
     CheckboxField?: PrimitiveOverrideProps<CheckboxFieldProps>;
     "OG ChecklistItem35502965"?: PrimitiveOverrideProps<FlexProps>;
-    Button35502967?: PrimitiveOverrideProps<ButtonProps>;
-    Button35692763?: PrimitiveOverrideProps<ButtonProps>;
+    Button?: PrimitiveOverrideProps<ButtonProps>;
     Details?: PrimitiveOverrideProps<FlexProps>;
     labels?: PrimitiveOverrideProps<FlexProps>;
     ownerlbl?: PrimitiveOverrideProps<TextProps>;

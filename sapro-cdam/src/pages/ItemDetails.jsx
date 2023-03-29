@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/react-mui-fileuploader#readme
 import { Grid, Box, Paper, Button, Snackbar, Alert, Menu, MenuItem, Typography, Container } from '@mui/material';
 import { List, ListItem, ListItemText, ListItemButton, ListItemIcon, SpeedDialIcon } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FileUploader } from '@aws-amplify/ui-react';
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -14,11 +15,28 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
+let flag = 0
+
 export function FileUploadPage() {
     const [filesToUpload, setFilesToUpload] = useState([]);
     const [filesInBucket, setFilesInBucket] = useState([]);
     const [uploadSuccess, setUploadSuccess] = useState(false)
     const [uploadFailure, setUploadFailure] = useState(false)
+    const [itemDetails, setItemDetails] = useState([])
+
+    let params = useParams()
+
+    async function getItemDetails() {
+        try {
+            let model;
+            if (flag === 0) {
+                model = await DataStore.query(Checklist, { id: params.id });
+                setCommand(model)
+                flag++
+            }
+            // console.log(model.id) //TODO: this executes three times for some reason...  this may waste money unnecessarily
+        } catch (err) { console.log('error fetching Checklists') }
+    }
 
     const handleFileUploadError = (error) => {
         console.log("File Upload Error: ", error);
@@ -58,6 +76,8 @@ export function FileUploadPage() {
         setFilesInBucket(response);
         console.log(response); //TODO: Remove, for debugging only
     }
+
+    getItemDetails();
 
     return (
         <Container>

@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { Container, Typography, Box, Button, css } from '@mui/material';
-import { useParams } from 'react-router-dom';
-import {
-    ChecklistItemCollection
-} from '../ui-components';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ChecklistItemCollection } from '../ui-components';
 import { DataStore } from '@aws-amplify/datastore';
 import { Checklist, ChecklistItem } from '../models';
 import { Link } from '@aws-amplify/ui-react';
-import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/react-mui-fileuploader#readme
 
 
 // Somewhat rudimentary mutex...
@@ -16,6 +13,8 @@ let flag = 0
 function CommandDetail() {
     const [command, setCommand] = useState([])
     const [completions, setCompletions] = useState([])
+
+    const nav = useNavigate()
 
     let params = useParams(); // This is how you collect the information put in the url, in this case the command id
 
@@ -76,7 +75,7 @@ function CommandDetail() {
                 <ChecklistItemCollection
                     overrideItems={({ item, index }) => ({
                         //TODO: this works great as proof of concept, but it doesn't actually *remove* the checklist items that this command shouldn't have access to
-                        display: item.checklist.id != command.id ? 'none' : 'flex', 
+                        display: item.checklist.id != command.id ? 'none' : 'flex',
                         onMouseOver: () => {
                             if (completions.find(a => a.id === item.id) == null) {
                                 completions.push({
@@ -112,6 +111,12 @@ function CommandDetail() {
                             },
                             "reference": {
                                 children: item.reference
+                            },
+                            "Button": {
+                                onClick: () => {
+                                    // console.log(item.id)
+                                    nav(item.id)
+                                }
                             }
                         }
                     })} />

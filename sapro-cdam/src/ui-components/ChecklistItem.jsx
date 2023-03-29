@@ -18,8 +18,7 @@ export default function ChecklistItem(props) {
     {
       overrides: {
         CheckboxField: {},
-        Button35502967: {},
-        Button35692763: {},
+        Button: {},
         "OG ChecklistItem35502965": {},
         "OG ChecklistItem35702815": {},
         ownerlbl: {},
@@ -38,8 +37,7 @@ export default function ChecklistItem(props) {
     {
       overrides: {
         CheckboxField: {},
-        Button35502967: {},
-        Button35692763: {},
+        Button: { children: "Download Current File" },
         "OG ChecklistItem35502965": { display: "none" },
         "OG ChecklistItem35702815": {},
         ownerlbl: {},
@@ -126,19 +124,8 @@ export default function ChecklistItem(props) {
             size="default"
             isDisabled={false}
             variation="default"
-            children="Upload File"
-            {...getOverrideProps(overrides, "Button35502967")}
-          ></Button>
-          <Button
-            width="unset"
-            height="unset"
-            justifyContent="flex-end"
-            shrink="0"
-            size="default"
-            isDisabled={false}
-            variation="default"
-            children="Download Current File"
-            {...getOverrideProps(overrides, "Button35692763")}
+            children="Supporting Docs & More Info"
+            {...getOverrideProps(overrides, "Button")}
           ></Button>
         </Flex>
       </Flex>
