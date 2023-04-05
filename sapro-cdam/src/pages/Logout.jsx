@@ -1,7 +1,7 @@
 import React from 'react';
 import { Auth } from 'aws-amplify';
 import { Link } from "react-router-dom";
-import Button from '@mui/material/Button';
+import { Container, Typography, Box, Button } from '@mui/material';
 
 
 async function signOut() {
@@ -15,19 +15,31 @@ async function signOut() {
 function Logout() {
     signOut();
     return (
-        <>
-            <h1>Successfully Logged Out</h1>
-            {/* TODO: This is the right way to do buttons/links to internal pages as it will be faster
+        <Box sx={{pt: 6, pb: 6 }}>
+            <Container maxWidth="sm" sx={{ pt: 6, pb: 6 }}>
+
+                <Typography variant="h4" component="h3" gutterBottom sx={{ textAlign: 'center' }}>
+                    Successfully Logged Out
+                </Typography>
+
+                <Container maxWidth="xs" sx={{ pt: 2, pb: 4, alignItems: 'center' }}>
+                    {/* TODO: This is the right way to do buttons/links to internal pages as it will be faster
             than making a whole new HTTP Request as would happen in an "a" tag */}
-            <Button
-                key="Login"
-                sx={{ my: 2, color: 'blue', display: 'block'}}
-                component={Link} 
-                to="/"
-            >
-                Login            
-            </Button>
-        </>
+                    <Button
+                        variant='contained'
+                        fullWidth
+                        key="Login"
+                        component={Link}
+                        to="/"
+                    >
+                        Return to Login
+                    </Button>
+
+                </Container>
+
+            </Container>
+
+        </Box>
     );
 }
 
