@@ -1,0 +1,32 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-saprocdam-dev-12606-authRole",
+      "UnauthRoleArn": "arn:aws:iam::270575288362:role/amplify-saprocdam-dev-12606-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::270575288362:role/amplify-saprocdam-dev-12606-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-saprocdam-dev-12606-deployment",
+      "UnauthRoleName": "amplify-saprocdam-dev-12606-unauthRole",
+      "StackName": "amplify-saprocdam-dev-12606",
+      "StackId": "arn:aws:cloudformation:us-east-1:270575288362:stack/amplify-saprocdam-dev-12606/8f79e0b0-60c0-11ed-90f8-0ee25b45eaa3",
+      "AmplifyAppId": "d1w2j8gp4cona6"
+    },
+    "categories": {
+      "api": {
+        "saprocdam": {}
+      },
+      "auth": {
+        "saprocdamd49d7079": {}
+      },
+      "hosting": {
+        "amplifyhosting": {
+          "appId": "d1w2j8gp4cona6",
+          "type": "manual"
+        }
+      },
+      "storage": {
+        "saproCDAMDocumentStore": {}
+      }
+    }
+  }
+}
