@@ -39,7 +39,7 @@ export function FileUploadPage() {
                 setItemDetails(model)
                 flag++
             }
-            console.log(model) //TODO: this executes three times for some reason...  this may waste money unnecessarily
+            // console.log(model) //TODO: this executes three times for some reason...  this may waste money unnecessarily
             // console.log(params.id) //TODO: this executes three times for some reason...  this may waste money unnecessarily
         } catch (err) { console.log('error fetching Checklists') }
     }
@@ -78,9 +78,9 @@ export function FileUploadPage() {
 
     async function listFiles() {
         // for listing ALL files without prefix, pass '' instead. TODO: eventually have this be a command/item-specific directory
-        const response = await Storage.list('');
-        setFilesInBucket(response);
-        console.log(response); //TODO: Remove, for debugging only
+        const response = await Storage.list(params.id + "/" + params.itemID + "/");
+        setFilesInBucket(response.results);
+        // console.log(response); //TODO: Remove, for debugging only
     }
 
     getItemDetails();
