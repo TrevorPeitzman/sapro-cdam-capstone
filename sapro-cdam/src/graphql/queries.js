@@ -1,41 +1,13 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const checklists = /* GraphQL */ `
-  query Checklists {
-    checklists {
-      id
-      commandName
-      responsibleParty
-      percentCompletion
-      checklistItems {
-        items {
-          id
-          itemName
-          completion
-          mandatory
-          description
-          reference
-          tier
-          responsibleParty
-          createdAt
-          updatedAt
-          checklistChecklistItemsId
-        }
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;
 export const getChecklist = /* GraphQL */ `
   query GetChecklist($id: ID!) {
     getChecklist(id: $id) {
       id
       commandName
-      responsibleParty
-      percentCompletion
+      commandPOC
+      commandPOCEmail
       checklistItems {
         items {
           id
@@ -48,12 +20,21 @@ export const getChecklist = /* GraphQL */ `
           responsibleParty
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
           checklistChecklistItemsId
+          checklistItemSupportingDocumentsId
         }
         nextToken
+        startedAt
       }
+      percentCompletion
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -67,15 +48,55 @@ export const listChecklists = /* GraphQL */ `
       items {
         id
         commandName
-        responsibleParty
-        percentCompletion
+        commandPOC
+        commandPOCEmail
         checklistItems {
           nextToken
+          startedAt
         }
+        percentCompletion
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       nextToken
+      startedAt
+    }
+  }
+`;
+export const syncChecklists = /* GraphQL */ `
+  query SyncChecklists(
+    $filter: ModelChecklistFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncChecklists(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        commandName
+        commandPOC
+        commandPOCEmail
+        checklistItems {
+          nextToken
+          startedAt
+        }
+        percentCompletion
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
     }
   }
 `;
@@ -86,13 +107,18 @@ export const getChecklistItem = /* GraphQL */ `
       checklist {
         id
         commandName
-        responsibleParty
-        percentCompletion
+        commandPOC
+        commandPOCEmail
         checklistItems {
           nextToken
+          startedAt
         }
+        percentCompletion
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       itemName
       completion
@@ -102,18 +128,41 @@ export const getChecklistItem = /* GraphQL */ `
       tier
       responsibleParty
       supportingDocuments {
-        items {
+        id
+        checklistItem {
           id
-          filename
+          itemName
+          completion
+          mandatory
+          description
+          reference
+          tier
+          responsibleParty
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          checklistChecklistItemsId
           checklistItemSupportingDocumentsId
         }
-        nextToken
+        filename
+        fileURL
+        author
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        supportingDocumentChecklistItemId
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       checklistChecklistItemsId
+      checklistItemSupportingDocumentsId
     }
   }
 `;
@@ -129,10 +178,14 @@ export const listChecklistItems = /* GraphQL */ `
         checklist {
           id
           commandName
-          responsibleParty
+          commandPOC
+          commandPOCEmail
           percentCompletion
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         itemName
         completion
@@ -142,13 +195,86 @@ export const listChecklistItems = /* GraphQL */ `
         tier
         responsibleParty
         supportingDocuments {
-          nextToken
+          id
+          filename
+          fileURL
+          author
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          supportingDocumentChecklistItemId
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
         checklistChecklistItemsId
+        checklistItemSupportingDocumentsId
       }
       nextToken
+      startedAt
+    }
+  }
+`;
+export const syncChecklistItems = /* GraphQL */ `
+  query SyncChecklistItems(
+    $filter: ModelChecklistItemFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncChecklistItems(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        checklist {
+          id
+          commandName
+          commandPOC
+          commandPOCEmail
+          percentCompletion
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+        }
+        itemName
+        completion
+        mandatory
+        description
+        reference
+        tier
+        responsibleParty
+        supportingDocuments {
+          id
+          filename
+          fileURL
+          author
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          supportingDocumentChecklistItemId
+        }
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        checklistChecklistItemsId
+        checklistItemSupportingDocumentsId
+      }
+      nextToken
+      startedAt
     }
   }
 `;
@@ -161,10 +287,14 @@ export const getSupportingDocument = /* GraphQL */ `
         checklist {
           id
           commandName
-          responsibleParty
+          commandPOC
+          commandPOCEmail
           percentCompletion
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         itemName
         completion
@@ -174,16 +304,34 @@ export const getSupportingDocument = /* GraphQL */ `
         tier
         responsibleParty
         supportingDocuments {
-          nextToken
+          id
+          filename
+          fileURL
+          author
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          supportingDocumentChecklistItemId
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
         checklistChecklistItemsId
+        checklistItemSupportingDocumentsId
       }
       filename
+      fileURL
+      author
       createdAt
       updatedAt
-      checklistItemSupportingDocumentsId
+      _version
+      _deleted
+      _lastChangedAt
+      supportingDocumentChecklistItemId
     }
   }
 `;
@@ -211,14 +359,71 @@ export const listSupportingDocuments = /* GraphQL */ `
           responsibleParty
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
           checklistChecklistItemsId
+          checklistItemSupportingDocumentsId
         }
         filename
+        fileURL
+        author
         createdAt
         updatedAt
-        checklistItemSupportingDocumentsId
+        _version
+        _deleted
+        _lastChangedAt
+        supportingDocumentChecklistItemId
       }
       nextToken
+      startedAt
+    }
+  }
+`;
+export const syncSupportingDocuments = /* GraphQL */ `
+  query SyncSupportingDocuments(
+    $filter: ModelSupportingDocumentFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncSupportingDocuments(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        checklistItem {
+          id
+          itemName
+          completion
+          mandatory
+          description
+          reference
+          tier
+          responsibleParty
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          checklistChecklistItemsId
+          checklistItemSupportingDocumentsId
+        }
+        filename
+        fileURL
+        author
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        supportingDocumentChecklistItemId
+      }
+      nextToken
+      startedAt
     }
   }
 `;

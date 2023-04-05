@@ -1,16 +1,16 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./pages/Layout";
-// import Home from "./pages/Home";
-// import Blogs from "./pages/Blogs";
 import About from "./pages/About";
+import Admin from "./pages/Admin";
 import Contact from "./pages/Contact";
 import Logout from "./pages/Logout";
 import NoPage from "./pages/NoPage";
-import FileUpload from "./pages/FileUpload";
+import ItemDetails from "./pages/ItemDetails";
 import Dashboard from "./pages/Dashboard";
 import App from './App';
 import { Authenticator, useAuthenticator} from '@aws-amplify/ui-react';
+import CommandDetail from './pages/CommandDetail';
 
 
 
@@ -27,9 +27,10 @@ function Router() {
                     {/* TODO: This will most likely be how we allow certain users routes to certain pages and not to others */}
                     {route === 'authenticated' &&
                         <>
-                            
                             <Route path="Dashboard" element={<Dashboard />} />
-                            <Route path="File Upload" element={<FileUpload />} />
+                            <Route path="CommandDetail/:id" element={<CommandDetail />} />
+                            <Route path="CommandDetail/:id/:itemID" element={<ItemDetails />} />
+                            <Route path="Admin" element={<Admin />} />
                         </>
                     }
                     <Route path="about" element={<About />} />
