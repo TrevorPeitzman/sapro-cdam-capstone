@@ -1,13 +1,16 @@
-type Checklist @model @auth(rules: [{allow: public}]) {
+# This "input" configures a global authorization rule to enable public access to
+# all models in this schema. Learn more about authorization rules here: https://docs.amplify.aws/cli/graphql/authorization-rules
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type Checklist @model {
   id: ID!
   commandName: String!
-  commandPOC: String
-  commandPOCEmail: AWSEmail
-  checklistItems: [ChecklistItem] @hasMany
+  responsibleParty: String
   percentCompletion: Float
+  checklistItems: [ChecklistItem] @hasMany
 }
 
-type ChecklistItem @model @auth(rules: [{allow: public}]) {
+type ChecklistItem @model {
   id: ID!
   checklist: Checklist @belongsTo
   itemName: String!
@@ -17,14 +20,15 @@ type ChecklistItem @model @auth(rules: [{allow: public}]) {
   reference: String
   tier: Int
   responsibleParty: String
-  supportingDocuments: SupportingDocument @hasOne
+  supportingDocuments: [SupportingDocument] @hasMany
 }
 
-type SupportingDocument @model @auth(rules: [{allow: public}]) {
+type SupportingDocument @model {
   id: ID!
   checklistItem: ChecklistItem @belongsTo
-  filename: String!
-  fileURL: AWSURL
-  author: String
+  filename: String
 }
- 
+
+type Query {
+  checklists:[Checklist]
+}
