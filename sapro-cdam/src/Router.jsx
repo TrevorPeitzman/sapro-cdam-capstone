@@ -1,18 +1,16 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./pages/Layout";
-// import Home from "./pages/Home";
-// import Blogs from "./pages/Blogs";
+import About from "./pages/About";
+import Admin from "./pages/Admin";
 import Contact from "./pages/Contact";
 import Logout from "./pages/Logout";
 import NoPage from "./pages/NoPage";
-import FileUpload from "./pages/FileUpload";
+import ItemDetails from "./pages/ItemDetails";
 import Dashboard from "./pages/Dashboard";
-import GenerateReport from "./pages/GenerateReport";
-import Graphic from "./pages/Graphic";
-//import Graphic2 from "./pages/Graphic2";
 import App from './App';
 import { Authenticator, useAuthenticator} from '@aws-amplify/ui-react';
+import CommandDetail from './pages/CommandDetail';
 
 
 
@@ -29,14 +27,13 @@ function Router() {
                     {/* TODO: This will most likely be how we allow certain users routes to certain pages and not to others */}
                     {route === 'authenticated' &&
                         <>
-                            
                             <Route path="Dashboard" element={<Dashboard />} />
-                            <Route path="File Upload" element={<FileUpload />} />
-                            <Route path="Generate Report" element={<GenerateReport />} />
-                            <Route path="Graphic" element={<Graphic />} />
-                            {/*<Route path="Graphic2" element={<Graphic2 />} />*/}
+                            <Route path="CommandDetail/:id" element={<CommandDetail />} />
+                            <Route path="CommandDetail/:id/:itemID" element={<ItemDetails />} />
+                            <Route path="Admin" element={<Admin />} />
                         </>
                     }
+                    <Route path="about" element={<About />} />
                     <Route path="contact" element={<Contact />} />
                     <Route path="Logout" element={<Logout />} />
                     <Route path="*" element={<NoPage />} />

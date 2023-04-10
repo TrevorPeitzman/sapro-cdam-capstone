@@ -8,25 +8,35 @@ export const onCreateChecklist = /* GraphQL */ `
     onCreateChecklist(filter: $filter) {
       id
       commandName
-      responsibleParty
-      percentCompletion
+      commandPOC
+      commandPOCEmail
       checklistItems {
         items {
           id
           itemName
           completion
+          mandatory
           description
           reference
           tier
           responsibleParty
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
           checklistChecklistItemsId
+          checklistItemSupportingDocumentsId
         }
         nextToken
+        startedAt
       }
+      percentCompletion
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -37,25 +47,35 @@ export const onUpdateChecklist = /* GraphQL */ `
     onUpdateChecklist(filter: $filter) {
       id
       commandName
-      responsibleParty
-      percentCompletion
+      commandPOC
+      commandPOCEmail
       checklistItems {
         items {
           id
           itemName
           completion
+          mandatory
           description
           reference
           tier
           responsibleParty
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
           checklistChecklistItemsId
+          checklistItemSupportingDocumentsId
         }
         nextToken
+        startedAt
       }
+      percentCompletion
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -66,25 +86,35 @@ export const onDeleteChecklist = /* GraphQL */ `
     onDeleteChecklist(filter: $filter) {
       id
       commandName
-      responsibleParty
-      percentCompletion
+      commandPOC
+      commandPOCEmail
       checklistItems {
         items {
           id
           itemName
           completion
+          mandatory
           description
           reference
           tier
           responsibleParty
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
           checklistChecklistItemsId
+          checklistItemSupportingDocumentsId
         }
         nextToken
+        startedAt
       }
+      percentCompletion
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
     }
   }
 `;
@@ -97,33 +127,62 @@ export const onCreateChecklistItem = /* GraphQL */ `
       checklist {
         id
         commandName
-        responsibleParty
-        percentCompletion
+        commandPOC
+        commandPOCEmail
         checklistItems {
           nextToken
+          startedAt
         }
+        percentCompletion
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       itemName
       completion
+      mandatory
       description
       reference
       tier
       responsibleParty
       supportingDocuments {
-        items {
+        id
+        checklistItem {
           id
-          filename
+          itemName
+          completion
+          mandatory
+          description
+          reference
+          tier
+          responsibleParty
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          checklistChecklistItemsId
           checklistItemSupportingDocumentsId
         }
-        nextToken
+        filename
+        fileURL
+        author
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        supportingDocumentChecklistItemId
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       checklistChecklistItemsId
+      checklistItemSupportingDocumentsId
     }
   }
 `;
@@ -136,33 +195,62 @@ export const onUpdateChecklistItem = /* GraphQL */ `
       checklist {
         id
         commandName
-        responsibleParty
-        percentCompletion
+        commandPOC
+        commandPOCEmail
         checklistItems {
           nextToken
+          startedAt
         }
+        percentCompletion
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       itemName
       completion
+      mandatory
       description
       reference
       tier
       responsibleParty
       supportingDocuments {
-        items {
+        id
+        checklistItem {
           id
-          filename
+          itemName
+          completion
+          mandatory
+          description
+          reference
+          tier
+          responsibleParty
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          checklistChecklistItemsId
           checklistItemSupportingDocumentsId
         }
-        nextToken
+        filename
+        fileURL
+        author
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        supportingDocumentChecklistItemId
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       checklistChecklistItemsId
+      checklistItemSupportingDocumentsId
     }
   }
 `;
@@ -175,33 +263,62 @@ export const onDeleteChecklistItem = /* GraphQL */ `
       checklist {
         id
         commandName
-        responsibleParty
-        percentCompletion
+        commandPOC
+        commandPOCEmail
         checklistItems {
           nextToken
+          startedAt
         }
+        percentCompletion
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
       }
       itemName
       completion
+      mandatory
       description
       reference
       tier
       responsibleParty
       supportingDocuments {
-        items {
+        id
+        checklistItem {
           id
-          filename
+          itemName
+          completion
+          mandatory
+          description
+          reference
+          tier
+          responsibleParty
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          checklistChecklistItemsId
           checklistItemSupportingDocumentsId
         }
-        nextToken
+        filename
+        fileURL
+        author
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+        supportingDocumentChecklistItemId
       }
       createdAt
       updatedAt
+      _version
+      _deleted
+      _lastChangedAt
       checklistChecklistItemsId
+      checklistItemSupportingDocumentsId
     }
   }
 `;
@@ -216,28 +333,51 @@ export const onCreateSupportingDocument = /* GraphQL */ `
         checklist {
           id
           commandName
-          responsibleParty
+          commandPOC
+          commandPOCEmail
           percentCompletion
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         itemName
         completion
+        mandatory
         description
         reference
         tier
         responsibleParty
         supportingDocuments {
-          nextToken
+          id
+          filename
+          fileURL
+          author
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          supportingDocumentChecklistItemId
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
         checklistChecklistItemsId
+        checklistItemSupportingDocumentsId
       }
       filename
+      fileURL
+      author
       createdAt
       updatedAt
-      checklistItemSupportingDocumentsId
+      _version
+      _deleted
+      _lastChangedAt
+      supportingDocumentChecklistItemId
     }
   }
 `;
@@ -252,28 +392,51 @@ export const onUpdateSupportingDocument = /* GraphQL */ `
         checklist {
           id
           commandName
-          responsibleParty
+          commandPOC
+          commandPOCEmail
           percentCompletion
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         itemName
         completion
+        mandatory
         description
         reference
         tier
         responsibleParty
         supportingDocuments {
-          nextToken
+          id
+          filename
+          fileURL
+          author
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          supportingDocumentChecklistItemId
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
         checklistChecklistItemsId
+        checklistItemSupportingDocumentsId
       }
       filename
+      fileURL
+      author
       createdAt
       updatedAt
-      checklistItemSupportingDocumentsId
+      _version
+      _deleted
+      _lastChangedAt
+      supportingDocumentChecklistItemId
     }
   }
 `;
@@ -288,28 +451,51 @@ export const onDeleteSupportingDocument = /* GraphQL */ `
         checklist {
           id
           commandName
-          responsibleParty
+          commandPOC
+          commandPOCEmail
           percentCompletion
           createdAt
           updatedAt
+          _version
+          _deleted
+          _lastChangedAt
         }
         itemName
         completion
+        mandatory
         description
         reference
         tier
         responsibleParty
         supportingDocuments {
-          nextToken
+          id
+          filename
+          fileURL
+          author
+          createdAt
+          updatedAt
+          _version
+          _deleted
+          _lastChangedAt
+          supportingDocumentChecklistItemId
         }
         createdAt
         updatedAt
+        _version
+        _deleted
+        _lastChangedAt
         checklistChecklistItemsId
+        checklistItemSupportingDocumentsId
       }
       filename
+      fileURL
+      author
       createdAt
       updatedAt
-      checklistItemSupportingDocumentsId
+      _version
+      _deleted
+      _lastChangedAt
+      supportingDocumentChecklistItemId
     }
   }
 `;
