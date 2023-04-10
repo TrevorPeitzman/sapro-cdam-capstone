@@ -11,7 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import App from './App';
 import { Authenticator, useAuthenticator} from '@aws-amplify/ui-react';
 import CommandDetail from './pages/CommandDetail';
-
+import Graphic from "./pages/Graphic";
+import Report from "./pages/Report"
 
 
 // Handle all page routing here. IE wherever there is a to={Name} in a
@@ -31,6 +32,8 @@ function Router() {
                             <Route path="CommandDetail/:id" element={<CommandDetail />} />
                             <Route path="CommandDetail/:id/:itemID" element={<ItemDetails />} />
                             <Route path="Admin" element={<Admin />} />
+                            <Route path="Graphic" element={<Graphic />} />
+                            <Route path="Report" element={<Report />} />
                         </>
                     }
                     <Route path="about" element={<About />} />
