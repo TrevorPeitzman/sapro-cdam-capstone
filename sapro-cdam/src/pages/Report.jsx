@@ -1,12 +1,12 @@
 import React from 'react';
 import { Buffer } from 'buffer';
-import ReactDOM from 'react-dom'; // supposedly needed for client-side generation
+//import ReactDOM from 'react-dom'; // supposedly needed for client-side generation
 import ReactPDF, { PDFDownloadLink, Document, Image, Page, Text, View, StyleSheet, Svg, Rect, G, Polyline, Circle} from '@react-pdf/renderer';
 import { Grid, Box, Paper, Button, Snackbar, Alert, Menu, MenuItem, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { VictoryBar, VictoryPie }  from 'victory'
 //import ExportChart from "../utils/ExportChart";
-import {create, useState } from 'react';
+//import {create, useState } from 'react';
 //import { useScreenshot } from 'use-react-screenshot';
 import arc from '../d3pielib/arc.js';
 

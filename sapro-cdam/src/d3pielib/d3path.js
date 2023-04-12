@@ -35,7 +35,7 @@ export class Path {
   }
   closePath() {
     if (this._x1 !== null) {
-      this._x1 = this._x0, this._y1 = this._y0;
+      this._x1 = this._x0; this._y1 = this._y0;
       this._append`Z`;
     }
   }
@@ -49,7 +49,7 @@ export class Path {
     this._append`C${+x1},${+y1},${+x2},${+y2},${this._x1 = +x},${this._y1 = +y}`;
   }
   arcTo(x1, y1, x2, y2, r) {
-    x1 = +x1, y1 = +y1, x2 = +x2, y2 = +y2, r = +r;
+    x1 = +x1; y1 = +y1; x2 = +x2; y2 = +y2; r = +r;
 
     // Is the radius negative? Error.
     if (r < 0) throw new Error(`negative radius: ${r}`);
@@ -98,7 +98,7 @@ export class Path {
     }
   }
   arc(x, y, r, a0, a1, ccw) {
-    x = +x, y = +y, r = +r, ccw = !!ccw;
+    x = +x; y = +y; r = +r; ccw = !!ccw;
 
     // Is the radius negative? Error.
     if (r < 0) throw new Error(`negative radius: ${r}`);
