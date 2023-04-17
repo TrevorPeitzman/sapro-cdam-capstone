@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Box, Container } from '@mui/material';
+import { Grid, Box, Container, Typography } from '@mui/material';
 import { DataStore } from '@aws-amplify/datastore';
 import { ChecklistItem } from '../models';
 import {
@@ -27,11 +27,10 @@ async function createDefaultItems(params) {
 function Dashboard() {
     return (
         <Container>
-            {/* TODO: Needs testing */}
-            {/* <Grid> */}
-            <h1>This is the User's Dashboard page</h1>
-
-            {/* </Grid> */}
+            <Typography variant="h4" component="h2" gutterBottom sx={{ pt: 6, pb: 6, textAlign: 'center' }}>
+                Dashboard
+            </Typography>
+            
             {/* <EditProfile /> */}
 
         </Container>
