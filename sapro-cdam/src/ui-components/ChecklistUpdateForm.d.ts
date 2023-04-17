@@ -17,13 +17,11 @@ export declare type ChecklistUpdateFormInputValues = {
     commandName?: string;
     commandPOC?: string;
     commandPOCEmail?: string;
-    percentCompletion?: number;
 };
 export declare type ChecklistUpdateFormValidationValues = {
     commandName?: ValidationFunction<string>;
     commandPOC?: ValidationFunction<string>;
     commandPOCEmail?: ValidationFunction<string>;
-    percentCompletion?: ValidationFunction<number>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type ChecklistUpdateFormOverridesProps = {
@@ -31,7 +29,6 @@ export declare type ChecklistUpdateFormOverridesProps = {
     commandName?: PrimitiveOverrideProps<TextFieldProps>;
     commandPOC?: PrimitiveOverrideProps<TextFieldProps>;
     commandPOCEmail?: PrimitiveOverrideProps<TextFieldProps>;
-    percentCompletion?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type ChecklistUpdateFormProps = React.PropsWithChildren<{
     overrides?: ChecklistUpdateFormOverridesProps | undefined | null;

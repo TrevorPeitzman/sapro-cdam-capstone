@@ -30,7 +30,6 @@ export default function ChecklistItemCollection(props) {
         itemsDataStore.map(async (item) => ({
           ...item,
           checklist: await item.checklist,
-          supportingDocuments: await item.supportingDocuments,
         }))
       );
       setItems(loaded);
