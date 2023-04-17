@@ -162,7 +162,7 @@ export function FileUploadPage() {
                                         </ListItemIcon> */}
                                         {/* TODO: Need permissions in S3 to be set properly in order for this to work */}
                                         <ListItemButton component="a" href={"https://sapro-cdam-document-store12606-dev.s3.amazonaws.com/public/" + file.key} target="_blank">
-                                            <ListItemText primary={file.key} />
+                                            <ListItemText primary={file.key.split("/")[2]} />
                                         </ListItemButton>
                                     </ListItem>
                                 ))}
