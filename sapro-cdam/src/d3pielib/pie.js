@@ -1,3 +1,5 @@
+// Last modified 15 Apr 2023 by RW
+
 import array from "./array.js";
 import constant from "./constant.js";
 import descending from "./descending.js";
@@ -39,7 +41,8 @@ export default function() {
 
     // Compute the arcs! They are stored in the original data's order.
     for (i = 0, k = sum ? (da - n * pa) / sum : 0; i < n; ++i, a0 = a1) {
-      j = index[i], v = arcs[j], a1 = a0 + (v > 0 ? v * k : 0) + pa, arcs[j] = {
+      j = index[i]; v = arcs[j]; a1 = a0 + (v > 0 ? v * k : 0) + pa;
+      arcs[j] = {
         data: data[j],
         index: i,
         value: v,
