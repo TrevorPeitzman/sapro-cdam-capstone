@@ -23,9 +23,9 @@ function Admin() {
 
                 <Divider variant="middle" />
 
-                <Typography variant="h5" component="h2" gutterBottom align='center' sx={{ pt: 6, pb: 0, textAlign: 'center' }}>
+                {/* <Typography variant="h5" component="h2" gutterBottom align='center' sx={{ pt: 6, pb: 0, textAlign: 'center' }}>
                     Request Access to the Admins list
-                </Typography>
+                </Typography> */}
 
                 {/* <AccessRequestListCreateForm /> */}
 
