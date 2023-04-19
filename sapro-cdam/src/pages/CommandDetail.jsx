@@ -48,7 +48,6 @@ function CommandDetail() {
     return (
 
         <Box sx={{ bgcolor: '#D3D3D3', pt: 6, pb: 6 }}>
-            {console.log(command)}
             <Container maxWidth="sm" sx={{ bgcolor: '#D3D3D3', pt: 6, pb: 6 }}>
 
                 <Typography variant="h4" component="h3" gutterBottom sx={{ textAlign: 'center' }} >
