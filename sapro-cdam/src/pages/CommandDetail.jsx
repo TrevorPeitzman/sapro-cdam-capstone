@@ -7,28 +7,22 @@ import { Checklist, ChecklistItem } from '../models';
 import { Link } from '@aws-amplify/ui-react';
 
 
-// Somewhat rudimentary mutex...
-let flag = 0
-
 function CommandDetail() {
-    const [command, setCommand] = useState([])
+    let params = useParams(); // This is how you collect the information put in the url, in this case the command id
+
+    const [command, setCommand] = useState(DataStore.query(Checklist, { id: params.id }))
     const [completions, setCompletions] = useState([])
+    const [flag, setFlag] = useState(0)
 
     const nav = useNavigate()
 
-    let params = useParams(); // This is how you collect the information put in the url, in this case the command id
-
-    async function getCommandName() {
-        try {
-            let model;
-            if (flag === 0) {
-                model = await DataStore.query(Checklist, { id: params.id });
-                setCommand(model)
-                flag++
-            }
-            // console.log(model.id) //TODO: this executes three times for some reason...  this may waste money unnecessarily
-        } catch (err) { console.log('error fetching Checklists') }
-    }
+    // The new and improved way to get Command Details, now without the Race Condition and overuse of the API
+    function getCommand() {
+        if (flag <= 0) {
+            DataStore.query(Checklist, { id: params.id }).then(r => setCommand(r))
+            setFlag(1)
+        }
+    }    
 
     function toggle(seed) {
         return !seed
@@ -49,11 +43,12 @@ function CommandDetail() {
         } catch (err) { console.log('error pushing value to Checklist: ', err) }
     }
 
-    getCommandName();
+    getCommand();
 
     return (
 
         <Box sx={{ bgcolor: '#D3D3D3', pt: 6, pb: 6 }}>
+            {console.log(command)}
             <Container maxWidth="sm" sx={{ bgcolor: '#D3D3D3', pt: 6, pb: 6 }}>
 
                 <Typography variant="h4" component="h3" gutterBottom sx={{ textAlign: 'center' }} >
@@ -68,7 +63,11 @@ function CommandDetail() {
                     POC Email: <Link href={'mailto:' + command.commandPOCEmail}>{command.commandPOCEmail}</Link>
                 </Typography>
 
-                <Container maxWidth="xs" sx={{ bgcolor: '#D3D3D3', pt: 2, pb: 4, alignItems: 'center' }}>
+                <Container maxWidth="xs" sx={{ bgcolor: '#D3D3D3', pt: 2, pb: 2, alignItems: 'center' }}>
+                    <Button variant='contained' fullWidth onClick={getCommand}>Add Checklist Items</Button>
+                </Container>
+
+                <Container maxWidth="xs" sx={{ bgcolor: '#D3D3D3', pt: 0, pb: 4, alignItems: 'center' }}>
                     <Button variant='contained' fullWidth onClick={submitChanges}>Submit All Changes</Button>
                 </Container>
 
@@ -114,7 +113,6 @@ function CommandDetail() {
                             },
                             "Button": {
                                 onClick: () => {
-                                    // console.log(item.id)
                                     nav(item.id)
                                 }
                             }
