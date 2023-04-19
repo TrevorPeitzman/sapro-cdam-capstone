@@ -20,6 +20,10 @@ const Item = styled(Paper)(({ theme }) => ({
 
 let flag = 0
 
+// export 
+
+//   // usage
+//   
 // This is the old FileUpload page!
 export function FileUploadPage() {
     const [filesToUpload, setFilesToUpload] = useState([]);
@@ -66,6 +70,32 @@ export function FileUploadPage() {
             }
         })
     }
+    
+    function downloadBlob(fileKey, filename) {
+        const result = Storage.get(fileKey, { download: true });
+        const url = URL.createObjectURL(result.Body);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename || 'download';
+        const clickHandler = () => {
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+                a.removeEventListener('click', clickHandler);
+            }, 150);
+        };
+        a.addEventListener('click', clickHandler, false);
+        a.click();
+        return a;
+    }
+
+    const downloadFile = (fileKey) => {
+        const result = Storage.get(fileKey, { download: true });
+        console.log(result)
+        // downloadBlob(result.Body, fileName);
+        const url = URL.createObjectURL(result.Body);
+        console.log(url)
+        return URL.createObjectURL(result.Body);
+    }
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -111,7 +141,7 @@ export function FileUploadPage() {
                 <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
                     Reference: {itemDetails.reference}
                 </Typography>
-                
+
                 <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
                     Tier: {itemDetails.tier}
                 </Typography>

@@ -58,8 +58,10 @@ export default function App({ signOut, user }) {
       attributes.email = attributes.email.toLowerCase();
 
       // This is how we check if the email is from an approved domain
-      console.log("I'm in the email checker"); //TODO: Remove this logging
-      if (/^\w+([.-]?\w+)*@usna.edu$/.test(attributes.email)) {
+      // console.log("I'm in the email checker"); //TODO: Remove this logging
+      // if (/^\w+([.-]?\w+)*[@usna.edu]$/.test(attributes.email)) {
+      let domain = attributes.email.split("@")[1]
+      if (domain === "usna.edu" || domain === 'mail.mil') {
         console.log("email check success");
         return Auth.signUp({
           username,
@@ -67,7 +69,7 @@ export default function App({ signOut, user }) {
           attributes,
         });
       } else {
-        console.log("email check fail");
+        // console.log("email check fail");
         // TODO: fix this to make it a bit cleaner of an error than a popup message
         // alert("This email domain is not permitted. Please sign up with a permitted email.");
         <Snackbar open={true} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
