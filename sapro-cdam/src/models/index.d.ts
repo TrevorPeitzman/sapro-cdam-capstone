@@ -10,7 +10,7 @@ type ChecklistItemMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
-type SupportingDocumentMetaData = {
+type AccessRequestListMetaData = {
   readOnlyFields: 'createdAt' | 'updatedAt';
 }
 
@@ -52,10 +52,8 @@ type EagerChecklistItem = {
   readonly reference?: string | null;
   readonly tier?: number | null;
   readonly responsibleParty?: string | null;
-  readonly supportingDocuments?: SupportingDocument | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly checklistItemSupportingDocumentsId?: string | null;
 }
 
 type LazyChecklistItem = {
@@ -68,10 +66,8 @@ type LazyChecklistItem = {
   readonly reference?: string | null;
   readonly tier?: number | null;
   readonly responsibleParty?: string | null;
-  readonly supportingDocuments: AsyncItem<SupportingDocument | undefined>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly checklistItemSupportingDocumentsId?: string | null;
 }
 
 export declare type ChecklistItem = LazyLoading extends LazyLoadingDisabled ? EagerChecklistItem : LazyChecklistItem
@@ -80,28 +76,26 @@ export declare const ChecklistItem: (new (init: ModelInit<ChecklistItem, Checkli
   copyOf(source: ChecklistItem, mutator: (draft: MutableModel<ChecklistItem, ChecklistItemMetaData>) => MutableModel<ChecklistItem, ChecklistItemMetaData> | void): ChecklistItem;
 }
 
-type EagerSupportingDocument = {
+type EagerAccessRequestList = {
   readonly id: string;
-  readonly checklistItem?: ChecklistItem | null;
-  readonly filename: string;
-  readonly fileURL?: string | null;
-  readonly author?: string | null;
+  readonly userID: string;
+  readonly email: string;
+  readonly reason?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
-type LazySupportingDocument = {
+type LazyAccessRequestList = {
   readonly id: string;
-  readonly checklistItem: AsyncItem<ChecklistItem | undefined>;
-  readonly filename: string;
-  readonly fileURL?: string | null;
-  readonly author?: string | null;
+  readonly userID: string;
+  readonly email: string;
+  readonly reason?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
-export declare type SupportingDocument = LazyLoading extends LazyLoadingDisabled ? EagerSupportingDocument : LazySupportingDocument
+export declare type AccessRequestList = LazyLoading extends LazyLoadingDisabled ? EagerAccessRequestList : LazyAccessRequestList
 
-export declare const SupportingDocument: (new (init: ModelInit<SupportingDocument, SupportingDocumentMetaData>) => SupportingDocument) & {
-  copyOf(source: SupportingDocument, mutator: (draft: MutableModel<SupportingDocument, SupportingDocumentMetaData>) => MutableModel<SupportingDocument, SupportingDocumentMetaData> | void): SupportingDocument;
+export declare const AccessRequestList: (new (init: ModelInit<AccessRequestList, AccessRequestListMetaData>) => AccessRequestList) & {
+  copyOf(source: AccessRequestList, mutator: (draft: MutableModel<AccessRequestList, AccessRequestListMetaData>) => MutableModel<AccessRequestList, AccessRequestListMetaData> | void): AccessRequestList;
 }

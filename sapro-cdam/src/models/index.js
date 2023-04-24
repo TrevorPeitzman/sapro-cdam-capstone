@@ -4,10 +4,10 @@ import { schema } from './schema';
 
 
 
-const { Checklist, ChecklistItem, SupportingDocument } = initSchema(schema);
+const { Checklist, ChecklistItem, AccessRequestList } = initSchema(schema);
 
 export {
   Checklist,
   ChecklistItem,
-  SupportingDocument
+  AccessRequestList
 };
