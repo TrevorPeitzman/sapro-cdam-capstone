@@ -12,6 +12,8 @@ import { listChecklists } from './graphql/queries'
 import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { useNavigate } from 'react-router-dom';
+import Report from "./pages/Report"
+
 
 import {
   ChecklistCollection, NavBar
@@ -20,6 +22,7 @@ import {
 // Snackbar stuff
 import MuiAlert from '@mui/material/Alert';
 import { Snackbar, Box, Container, Typography } from '@mui/material';
+import CommandDetail from './pages/CommandDetail';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -28,14 +31,35 @@ Amplify.configure(awsExports);
 
 const initialState = { commandName: "" };
 
+async function getUserGroups() {
+  try {
+    const user = await Auth.currentAuthenticatedUser();
+    const accessToken = user.signInUserSession.accessToken;
+    const groups = accessToken.payload['cognito:groups'];
+    console.log('First User group:', groups[0]);
+    return groups;
+  } catch (error) {
+    console.error('Error retrieving user groups:', error);
+    return [];
+  }
+}
+
 export default function App({ signOut, user }) {
   const [formState, setFormState] = useState([])
   const [Checklists, setChecklists] = useState([])
-  const [filesState, setFileState] = useState([])
-  // const { user, signOut } = useAuthenticator((context) => [context.user])
+  const [groups, setGroups] = useState([]);
+
   const { route } = useAuthenticator(context => [context.route])
 
   const nav = useNavigate()
+
+  useEffect(() => {
+    async function fetchData() {
+      const groups = await getUserGroups();
+      setGroups(groups[0])
+    }
+    fetchData();
+  }, []);
 
   const components = {
     Header() {
@@ -87,22 +111,6 @@ export default function App({ signOut, user }) {
     },
   }
 
-  // useEffect(() => {
-  //   fetchChecklists()
-  // }, [])
-
-  // function setInput(key, value) {
-  //   setFormState({ ...formState, [key]: value })
-  // }
-
-  // async function fetchChecklists() {
-  //   try {
-  //     const checklistData = await API.graphql(graphqlOperation(listChecklists))
-  //     const Checklists = checklistData.data.listChecklists.items
-  //     setChecklists(Checklists)
-  //   } catch (err) { console.log('error fetching Checklists') }
-  // }
-
   async function addChecklist() {
     try {
       const checklist = { ...formState }
@@ -121,63 +129,36 @@ export default function App({ signOut, user }) {
     }
   }
 
-  async function uploadFile(e) {
-    const file = e.target.files[0];
-    try {
-      await Storage.put(file.name, file);
-      <Snackbar open={true} anchorOrigin={{ vertical: "top", horizontal: "center" }} message="Upload Successful" autoHideDuration={6000} />
-    } catch (error) {
-      console.log("Error uploading file: ", error);
-      <Snackbar open={true} anchorOrigin={{ vertical: "top", horizontal: "center" }} message="Upload Unsuccessful" />
-    }
-  }
+  // async function downloadBlob(blob, filename) {
+  //   const url = URL.createObjectURL(blob);
+  //   const a = document.createElement('a');
+  //   a.href = url;
+  //   a.download = filename || 'download';
+  //   const clickHandler = () => {
+  //     setTimeout(() => {
+  //       URL.revokeObjectURL(url);
+  //       a.removeEventListener('click', clickHandler);
+  //     }, 150);
+  //   };
+  //   a.addEventListener('click', clickHandler, false);
+  //   a.click();
+  //   return a;
+  // }
 
-  async function listFiles() {
-    const files = await Storage.list('')
-    let signedFiles = files.map(f => Storage.get(f.key))
-    signedFiles = await Promise.all(signedFiles)
-    console.log('signedFiles: ', signedFiles)
-    console.log('Files: ', files)
-    setFileState([...filesState, files])
-
-    // {files.map((f) => (
-    //   <Button
-    //       key={f.key}
-    //       sx={{ my: 2, color: 'white', display: 'block' }}123
-    //       component="a" 
-    //       to={signedFiles}
-    //   >
-    //       {f.key}
-    //   </Button>
-    // ))}
-  }
-
-  async function downloadBlob(blob, filename) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename || 'download';
-    const clickHandler = () => {
-      setTimeout(() => {
-        URL.revokeObjectURL(url);
-        a.removeEventListener('click', clickHandler);
-      }, 150);
-    };
-    a.addEventListener('click', clickHandler, false);
-    a.click();
-    return a;
-  }
-
-  async function download(fileKey) {
-    const result = await Storage.get(fileKey, { download: true });
-    downloadBlob(result.Body, 'filename');
-  }
+  // async function download(fileKey) {
+  //   const result = await Storage.get(fileKey, { download: true });
+  //   downloadBlob(result.Body, 'filename');
+  // }
 
   return (
     <Authenticator services={services} components={components} initialState="signIn">
 
       {/*TODO: this is kinda a shitty way of discovering if the user is authenticated, potentially change this */}
-      {route === 'authenticated' &&
+      {/*TODO: duplicate, and make one for SAPRO-Admins*/}
+      {route === 'authenticated' && groups.includes('Administrators') &&
+        // {
+
+        // }
         <main>
           {/* Hero unit */}
           <Box
@@ -216,7 +197,60 @@ export default function App({ signOut, user }) {
             </Container>
           </Box>
         </main>
+      } 
+
+      {route === 'authenticated' && groups.includes('Installation-Commanders') &&
+        <main>
+          <Container maxWidth="sx">
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              Installation Commander Dashboard
+            </Typography>
+          </Container>
+          {/* TODO: Determine how to store and pass the id associated with the installation the commander is in charge of */}
+          <Report />
+        </main>
       }
+      
+      {route === 'authenticated' && groups.includes('Work-Center-Admins') &&
+        <main>
+          <Container maxWidth="sx">
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              Work Center Admin Dashboard
+            </Typography>
+          </Container>
+          {/* TODO: Determine how to store and pass the id associated with the installation the Work Center Admin is in charge of */}
+          <CommandDetail />
+        </main>
+      }
+      
+      {route === 'authenticated' && groups.length === 0 &&
+        <main>
+          <Container maxWidth="sx">
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              You are not currently in a group!
+            </Typography>
+          </Container>
+        </main>
+      }
+
     </Authenticator>
   )
 };
