@@ -8,12 +8,13 @@
 import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { Checklist } from "../models";
+import { AccessRequestList } from "../models";
 import { fetchByPath, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
-export default function ChecklistCreateForm(props) {
+export default function AccessRequestListUpdateForm(props) {
   const {
-    clearOnSuccess = true,
+    id: idProp,
+    accessRequestList,
     onSuccess,
     onError,
     onSubmit,
@@ -23,28 +24,39 @@ export default function ChecklistCreateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    commandName: "",
-    commandPOC: "",
-    commandPOCEmail: "",
+    userID: "",
+    email: "",
+    reason: "",
   };
-  const [commandName, setCommandName] = React.useState(
-    initialValues.commandName
-  );
-  const [commandPOC, setCommandPOC] = React.useState(initialValues.commandPOC);
-  const [commandPOCEmail, setCommandPOCEmail] = React.useState(
-    initialValues.commandPOCEmail
-  );
+  const [userID, setUserID] = React.useState(initialValues.userID);
+  const [email, setEmail] = React.useState(initialValues.email);
+  const [reason, setReason] = React.useState(initialValues.reason);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    setCommandName(initialValues.commandName);
-    setCommandPOC(initialValues.commandPOC);
-    setCommandPOCEmail(initialValues.commandPOCEmail);
+    const cleanValues = accessRequestListRecord
+      ? { ...initialValues, ...accessRequestListRecord }
+      : initialValues;
+    setUserID(cleanValues.userID);
+    setEmail(cleanValues.email);
+    setReason(cleanValues.reason);
     setErrors({});
   };
+  const [accessRequestListRecord, setAccessRequestListRecord] =
+    React.useState(accessRequestList);
+  React.useEffect(() => {
+    const queryData = async () => {
+      const record = idProp
+        ? await DataStore.query(AccessRequestList, idProp)
+        : accessRequestList;
+      setAccessRequestListRecord(record);
+    };
+    queryData();
+  }, [idProp, accessRequestList]);
+  React.useEffect(resetStateValues, [accessRequestListRecord]);
   const validations = {
-    commandName: [{ type: "Required" }],
-    commandPOC: [],
-    commandPOCEmail: [{ type: "Email" }],
+    userID: [{ type: "Required" }],
+    email: [{ type: "Required" }, { type: "Email" }],
+    reason: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -71,9 +83,9 @@ export default function ChecklistCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          commandName,
-          commandPOC,
-          commandPOCEmail,
+          userID,
+          email,
+          reason,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -103,12 +115,13 @@ export default function ChecklistCreateForm(props) {
               modelFields[key] = undefined;
             }
           });
-          await DataStore.save(new Checklist(modelFields));
+          await DataStore.save(
+            AccessRequestList.copyOf(accessRequestListRecord, (updated) => {
+              Object.assign(updated, modelFields);
+            })
+          );
           if (onSuccess) {
             onSuccess(modelFields);
-          }
-          if (clearOnSuccess) {
-            resetStateValues();
           }
         } catch (err) {
           if (onError) {
@@ -116,99 +129,100 @@ export default function ChecklistCreateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "ChecklistCreateForm")}
+      {...getOverrideProps(overrides, "AccessRequestListUpdateForm")}
       {...rest}
     >
       <TextField
-        label="Command name"
+        label="User id"
         isRequired={true}
         isReadOnly={false}
-        value={commandName}
+        value={userID}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              commandName: value,
-              commandPOC,
-              commandPOCEmail,
+              userID: value,
+              email,
+              reason,
             };
             const result = onChange(modelFields);
-            value = result?.commandName ?? value;
+            value = result?.userID ?? value;
           }
-          if (errors.commandName?.hasError) {
-            runValidationTasks("commandName", value);
+          if (errors.userID?.hasError) {
+            runValidationTasks("userID", value);
           }
-          setCommandName(value);
+          setUserID(value);
         }}
-        onBlur={() => runValidationTasks("commandName", commandName)}
-        errorMessage={errors.commandName?.errorMessage}
-        hasError={errors.commandName?.hasError}
-        {...getOverrideProps(overrides, "commandName")}
+        onBlur={() => runValidationTasks("userID", userID)}
+        errorMessage={errors.userID?.errorMessage}
+        hasError={errors.userID?.hasError}
+        {...getOverrideProps(overrides, "userID")}
       ></TextField>
       <TextField
-        label="Command poc"
-        isRequired={false}
+        label="Email"
+        isRequired={true}
         isReadOnly={false}
-        value={commandPOC}
+        value={email}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              commandName,
-              commandPOC: value,
-              commandPOCEmail,
+              userID,
+              email: value,
+              reason,
             };
             const result = onChange(modelFields);
-            value = result?.commandPOC ?? value;
+            value = result?.email ?? value;
           }
-          if (errors.commandPOC?.hasError) {
-            runValidationTasks("commandPOC", value);
+          if (errors.email?.hasError) {
+            runValidationTasks("email", value);
           }
-          setCommandPOC(value);
+          setEmail(value);
         }}
-        onBlur={() => runValidationTasks("commandPOC", commandPOC)}
-        errorMessage={errors.commandPOC?.errorMessage}
-        hasError={errors.commandPOC?.hasError}
-        {...getOverrideProps(overrides, "commandPOC")}
+        onBlur={() => runValidationTasks("email", email)}
+        errorMessage={errors.email?.errorMessage}
+        hasError={errors.email?.hasError}
+        {...getOverrideProps(overrides, "email")}
       ></TextField>
       <TextField
-        label="Command poc email"
+        label="Reason"
         isRequired={false}
         isReadOnly={false}
-        value={commandPOCEmail}
+        value={reason}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              commandName,
-              commandPOC,
-              commandPOCEmail: value,
+              userID,
+              email,
+              reason: value,
             };
             const result = onChange(modelFields);
-            value = result?.commandPOCEmail ?? value;
+            value = result?.reason ?? value;
           }
-          if (errors.commandPOCEmail?.hasError) {
-            runValidationTasks("commandPOCEmail", value);
+          if (errors.reason?.hasError) {
+            runValidationTasks("reason", value);
           }
-          setCommandPOCEmail(value);
+          setReason(value);
         }}
-        onBlur={() => runValidationTasks("commandPOCEmail", commandPOCEmail)}
-        errorMessage={errors.commandPOCEmail?.errorMessage}
-        hasError={errors.commandPOCEmail?.hasError}
-        {...getOverrideProps(overrides, "commandPOCEmail")}
+        onBlur={() => runValidationTasks("reason", reason)}
+        errorMessage={errors.reason?.errorMessage}
+        hasError={errors.reason?.hasError}
+        {...getOverrideProps(overrides, "reason")}
       ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
       >
         <Button
-          children="Clear"
+          children="Reset"
           type="reset"
           onClick={(event) => {
             event.preventDefault();
             resetStateValues();
           }}
-          {...getOverrideProps(overrides, "ClearButton")}
+          isDisabled={!(idProp || accessRequestList)}
+          {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
           gap="15px"
@@ -218,7 +232,10 @@ export default function ChecklistCreateForm(props) {
             children="Submit"
             type="submit"
             variation="primary"
-            isDisabled={Object.values(errors).some((e) => e?.hasError)}
+            isDisabled={
+              !(idProp || accessRequestList) ||
+              Object.values(errors).some((e) => e?.hasError)
+            }
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
         </Flex>

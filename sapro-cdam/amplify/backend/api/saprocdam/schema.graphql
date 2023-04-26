@@ -17,14 +17,12 @@ type ChecklistItem @model @auth(rules: [{allow: public}]) {
   reference: String
   tier: Int
   responsibleParty: String
-  supportingDocuments: SupportingDocument @hasOne
 }
 
-type SupportingDocument @model @auth(rules: [{allow: public}]) {
+type AccessRequestList @model @auth(rules: [{allow: public}]) {
   id: ID!
-  checklistItem: ChecklistItem @belongsTo
-  filename: String!
-  fileURL: AWSURL
-  author: String
+  userID: String!
+  email: AWSEmail!
+  reason: String
 }
  

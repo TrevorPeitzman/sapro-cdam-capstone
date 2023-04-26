@@ -166,20 +166,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "supportingDocuments": {
-                    "name": "supportingDocuments",
-                    "isArray": false,
-                    "type": {
-                        "model": "SupportingDocument"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "HAS_ONE",
-                        "associatedWith": "checklistItem",
-                        "targetName": "checklistItemSupportingDocumentsId"
-                    }
-                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -195,13 +181,6 @@ export const schema = {
                     "isRequired": false,
                     "attributes": [],
                     "isReadOnly": true
-                },
-                "checklistItemSupportingDocumentsId": {
-                    "name": "checklistItemSupportingDocumentsId",
-                    "isArray": false,
-                    "type": "ID",
-                    "isRequired": false,
-                    "attributes": []
                 }
             },
             "syncable": true,
@@ -229,8 +208,8 @@ export const schema = {
                 }
             ]
         },
-        "SupportingDocument": {
-            "name": "SupportingDocument",
+        "AccessRequestList": {
+            "name": "AccessRequestList",
             "fields": {
                 "id": {
                     "name": "id",
@@ -239,35 +218,22 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
-                "checklistItem": {
-                    "name": "checklistItem",
-                    "isArray": false,
-                    "type": {
-                        "model": "ChecklistItem"
-                    },
-                    "isRequired": false,
-                    "attributes": [],
-                    "association": {
-                        "connectionType": "BELONGS_TO",
-                        "targetName": "supportingDocumentChecklistItemId"
-                    }
-                },
-                "filename": {
-                    "name": "filename",
+                "userID": {
+                    "name": "userID",
                     "isArray": false,
                     "type": "String",
                     "isRequired": true,
                     "attributes": []
                 },
-                "fileURL": {
-                    "name": "fileURL",
+                "email": {
+                    "name": "email",
                     "isArray": false,
-                    "type": "AWSURL",
-                    "isRequired": false,
+                    "type": "AWSEmail",
+                    "isRequired": true,
                     "attributes": []
                 },
-                "author": {
-                    "name": "author",
+                "reason": {
+                    "name": "reason",
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
@@ -291,7 +257,7 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "SupportingDocuments",
+            "pluralName": "AccessRequestLists",
             "attributes": [
                 {
                     "type": "model",
@@ -318,6 +284,6 @@ export const schema = {
     },
     "enums": {},
     "nonModels": {},
-    "codegenVersion": "3.4.0",
-    "version": "8a155d9c1dd16c373831e042f1415803"
+    "codegenVersion": "3.3.5",
+    "version": "64937283c76471009cc08c056406eb6e"
 };
