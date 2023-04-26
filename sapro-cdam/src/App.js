@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react'
 import { Amplify, API, Auth, Hub, graphqlOperation, Storage } from 'aws-amplify'
 import { createChecklist } from './graphql/mutations'
 import { listChecklists } from './graphql/queries'
-import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
+import { useAuthenticator, Authenticator, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { useNavigate } from 'react-router-dom';
 import Report from "./pages/Report"
@@ -21,7 +21,7 @@ import {
 
 // Snackbar stuff
 import MuiAlert from '@mui/material/Alert';
-import { Snackbar, Box, Container, Typography } from '@mui/material';
+import { Snackbar, Box, Container, Typography, Button } from '@mui/material';
 import CommandDetail from './pages/CommandDetail';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -56,6 +56,7 @@ export default function App({ signOut, user }) {
   useEffect(() => {
     async function fetchData() {
       const groups = await getUserGroups();
+      // TODO: WARNING! This only takes the first item in the returned groups array. If this becomes a problem, change it ;)
       setGroups(groups[0])
     }
     fetchData();
@@ -93,7 +94,6 @@ export default function App({ signOut, user }) {
           attributes,
         });
       } else {
-        // console.log("email check fail");
         // TODO: fix this to make it a bit cleaner of an error than a popup message
         // alert("This email domain is not permitted. Please sign up with a permitted email.");
         <Snackbar open={true} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
@@ -129,38 +129,56 @@ export default function App({ signOut, user }) {
     }
   }
 
-  // async function downloadBlob(blob, filename) {
-  //   const url = URL.createObjectURL(blob);
-  //   const a = document.createElement('a');
-  //   a.href = url;
-  //   a.download = filename || 'download';
-  //   const clickHandler = () => {
-  //     setTimeout(() => {
-  //       URL.revokeObjectURL(url);
-  //       a.removeEventListener('click', clickHandler);
-  //     }, 150);
-  //   };
-  //   a.addEventListener('click', clickHandler, false);
-  //   a.click();
-  //   return a;
-  // }
-
-  // async function download(fileKey) {
-  //   const result = await Storage.get(fileKey, { download: true });
-  //   downloadBlob(result.Body, 'filename');
-  // }
-
   return (
     <Authenticator services={services} components={components} initialState="signIn">
 
       {/*TODO: this is kinda a shitty way of discovering if the user is authenticated, potentially change this */}
-      {/*TODO: duplicate, and make one for SAPRO-Admins*/}
       {route === 'authenticated' && groups.includes('Administrators') &&
-        // {
-
-        // }
         <main>
-          {/* Hero unit */}
+          <Box
+            sx={{
+              bgcolor: '#D3D3D3',
+              pt: 8,
+              pb: 6,
+            }}
+          >
+            <Container maxWidth="sm">
+              <Typography
+                component="h1"
+                variant="h2"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                Admin Command Search
+              </Typography>
+            </Container>
+
+            <Container maxWidth="xs" sx={{ bgcolor: '#D3D3D3', pt: 0, pb: 0, alignItems: 'center' }}>
+              <Button variant='contained' fullWidth onClick={() => {nav("/Admin")}}>Add command to list</Button>
+            </Container>
+
+            <Container maxWidth="sm" sx={{ pt: 4, pb: 6 }}>
+              <ChecklistCollection
+                overrideItems={({ item }) => ({
+                  overrides: {
+                    "Button": {
+                      onClick: () => {
+                        console.log(item.id)
+                        nav("CommandDetail/" + item.id)
+                      }
+                    }
+                  }
+                })
+                }
+              />
+            </Container>
+          </Box>
+        </main>
+      } 
+      
+      {route === 'authenticated' && groups.includes('SAPRO-Auditors') &&
+        <main>
           <Box
             sx={{
               bgcolor: '#D3D3D3',

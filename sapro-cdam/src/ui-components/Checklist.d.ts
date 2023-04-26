@@ -16,7 +16,8 @@ export declare type ChecklistOverridesProps = {
     Title?: PrimitiveOverrideProps<TextProps>;
     Paragraph?: PrimitiveOverrideProps<TextProps>;
     Content35742720?: PrimitiveOverrideProps<FlexProps>;
-    Button?: PrimitiveOverrideProps<ButtonProps>;
+    Button36512717?: PrimitiveOverrideProps<ButtonProps>;
+    Button35742723?: PrimitiveOverrideProps<ButtonProps>;
     Divider?: PrimitiveOverrideProps<DividerProps>;
 } & EscapeHatchProps;
 export declare type ChecklistProps = React.PropsWithChildren<Partial<FlexProps> & {

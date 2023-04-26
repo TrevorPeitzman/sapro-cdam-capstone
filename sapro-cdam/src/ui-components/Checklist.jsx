@@ -13,7 +13,7 @@ import {
 import { Button, Divider, Flex, Text } from "@aws-amplify/ui-react";
 export default function Checklist(props) {
   const { checklist, overrides, ...rest } = props;
-  const buttonOnClick = useNavigateAction({
+  const buttonThreeFiveSevenFourTwoSevenTwoThreeOnClick = useNavigateAction({
     type: "url",
     url: `${"/CommandDetail?id="}${checklist?.id}`,
   });
@@ -21,7 +21,7 @@ export default function Checklist(props) {
     <Flex
       gap="0"
       direction="column"
-      width="566px"
+      width="unset"
       height="unset"
       justifyContent="flex-start"
       alignItems="flex-start"
@@ -38,7 +38,6 @@ export default function Checklist(props) {
         justifyContent="flex-start"
         alignItems="center"
         shrink="0"
-        alignSelf="stretch"
         position="relative"
         padding="24px 24px 24px 24px"
         backgroundColor="rgba(255,255,255,1)"
@@ -47,13 +46,11 @@ export default function Checklist(props) {
         <Flex
           gap="16px"
           direction="column"
-          width="unset"
+          width="251.5px"
           height="unset"
           justifyContent="flex-start"
           alignItems="flex-start"
-          grow="1"
-          shrink="1"
-          basis="0"
+          shrink="0"
           position="relative"
           padding="0px 0px 0px 0px"
           {...getOverrideProps(overrides, "Content35562745")}
@@ -106,17 +103,15 @@ export default function Checklist(props) {
         </Flex>
         <Flex
           gap="16px"
-          direction="column"
+          direction="row"
           width="unset"
           height="unset"
           justifyContent="center"
-          alignItems="flex-end"
-          grow="1"
-          shrink="1"
-          basis="0"
+          alignItems="center"
+          shrink="0"
           alignSelf="stretch"
           position="relative"
-          padding="0px 0px 0px 0px"
+          padding="0px 5px 0px 5px"
           {...getOverrideProps(overrides, "Content35742720")}
         >
           <Button
@@ -127,19 +122,29 @@ export default function Checklist(props) {
             size="default"
             isDisabled={false}
             variation="default"
+            children="Delete Checklist"
+            {...getOverrideProps(overrides, "Button36512717")}
+          ></Button>
+          <Button
+            width="unset"
+            height="unset"
+            justifyContent="flex-end"
+            shrink="0"
+            size="default"
+            isDisabled={false}
+            variation="default"
             children="Checklist Details"
             onClick={() => {
-              buttonOnClick();
+              buttonThreeFiveSevenFourTwoSevenTwoThreeOnClick();
             }}
-            {...getOverrideProps(overrides, "Button")}
+            {...getOverrideProps(overrides, "Button35742723")}
           ></Button>
         </Flex>
       </Flex>
       <Divider
-        width="unset"
+        width="566px"
         height="1px"
         shrink="0"
-        alignSelf="stretch"
         size="small"
         orientation="horizontal"
         {...getOverrideProps(overrides, "Divider")}
