@@ -21,8 +21,8 @@ export default function Checklist(props) {
     <Flex
       gap="0"
       direction="column"
-      width="unset"
-      height="unset"
+      width="666.5px"
+      height="109px"
       justifyContent="flex-start"
       alignItems="flex-start"
       position="relative"
@@ -37,7 +37,10 @@ export default function Checklist(props) {
         height="unset"
         justifyContent="flex-start"
         alignItems="center"
-        shrink="0"
+        grow="1"
+        shrink="1"
+        basis="0"
+        alignSelf="stretch"
         position="relative"
         padding="24px 24px 24px 24px"
         backgroundColor="rgba(255,255,255,1)"
@@ -108,7 +111,9 @@ export default function Checklist(props) {
           height="unset"
           justifyContent="center"
           alignItems="center"
-          shrink="0"
+          grow="1"
+          shrink="1"
+          basis="0"
           alignSelf="stretch"
           position="relative"
           padding="0px 5px 0px 5px"
@@ -142,9 +147,10 @@ export default function Checklist(props) {
         </Flex>
       </Flex>
       <Divider
-        width="566px"
+        width="unset"
         height="1px"
         shrink="0"
+        alignSelf="stretch"
         size="small"
         orientation="horizontal"
         {...getOverrideProps(overrides, "Divider")}

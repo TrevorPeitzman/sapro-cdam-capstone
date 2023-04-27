@@ -7,12 +7,12 @@ import './App.css';
 import awsExports from "./aws-exports";
 import React, { useEffect, useState } from 'react'
 import { Amplify, API, Auth, Hub, graphqlOperation, Storage } from 'aws-amplify'
-import { createChecklist } from './graphql/mutations'
-import { listChecklists } from './graphql/queries'
 import { useAuthenticator, Authenticator, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { useNavigate } from 'react-router-dom';
 import Report from "./pages/Report"
+import { DataStore } from '@aws-amplify/datastore';
+import { Checklist } from './models';
 
 
 import {
@@ -111,24 +111,6 @@ export default function App({ signOut, user }) {
     },
   }
 
-  async function addChecklist() {
-    try {
-      const checklist = { ...formState }
-      console.log(checklist)
-      if (!formState.commandName) {
-        console.log("Not enough info supplied to create, try again.") //TODO: fix this so that it is a snackbar or error message popup
-        return
-      }
-      setChecklists([...Checklists, checklist])
-      setFormState(initialState)
-      document.getElementById("chklst_create").reset()
-      console.log(checklist)
-      await API.graphql(graphqlOperation(createChecklist, { input: checklist }))
-    } catch (err) {
-      console.log('error creating checklist:', err)
-    }
-  }
-
   return (
     <Authenticator services={services} components={components} initialState="signIn">
 
@@ -155,17 +137,29 @@ export default function App({ signOut, user }) {
             </Container>
 
             <Container maxWidth="xs" sx={{ bgcolor: '#D3D3D3', pt: 0, pb: 0, alignItems: 'center' }}>
-              <Button variant='contained' fullWidth onClick={() => {nav("/Admin")}}>Add command to list</Button>
+              <Button variant='contained' fullWidth onClick={() => { nav("/Admin") }}>Add command to list</Button>
             </Container>
 
+            {/* TODO: Figure out a way to center this */}
             <Container maxWidth="sm" sx={{ pt: 4, pb: 6 }}>
               <ChecklistCollection
                 overrideItems={({ item }) => ({
                   overrides: {
-                    "Button": {
+                    "Button35742723": {
                       onClick: () => {
                         console.log(item.id)
                         nav("CommandDetail/" + item.id)
+                      }
+                    },
+                    "Button36512717": {
+                      onClick: async () => {
+                        if (window.confirm("Are you sure you want to delete the " + item.id + " checklist at this time?")) {
+                          const modelToDelete = await DataStore.query(Checklist, item.id);
+                          DataStore.delete(modelToDelete);
+                          console.log("Checklist deleted", item.id)
+                        } else {
+                          console.log("checklist deletion aborted");
+                        }
                       }
                     }
                   }
@@ -175,8 +169,8 @@ export default function App({ signOut, user }) {
             </Container>
           </Box>
         </main>
-      } 
-      
+      }
+
       {route === 'authenticated' && groups.includes('SAPRO-Auditors') &&
         <main>
           <Box
@@ -215,7 +209,7 @@ export default function App({ signOut, user }) {
             </Container>
           </Box>
         </main>
-      } 
+      }
 
       {route === 'authenticated' && groups.includes('Installation-Commanders') &&
         <main>
@@ -234,7 +228,7 @@ export default function App({ signOut, user }) {
           <Report />
         </main>
       }
-      
+
       {route === 'authenticated' && groups.includes('Work-Center-Admins') &&
         <main>
           <Container maxWidth="sx">
@@ -252,7 +246,7 @@ export default function App({ signOut, user }) {
           <CommandDetail />
         </main>
       }
-      
+
       {route === 'authenticated' && groups.length === 0 &&
         <main>
           <Container maxWidth="sx">
