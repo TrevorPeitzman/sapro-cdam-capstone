@@ -189,7 +189,7 @@ export default function App({ signOut, user }) {
                 color="text.primary"
                 gutterBottom
               >
-                Command Search
+                Auditor's Command Search
               </Typography>
             </Container>
 
@@ -197,11 +197,14 @@ export default function App({ signOut, user }) {
               <ChecklistCollection
                 overrideItems={({ item }) => ({
                   overrides: {
-                    "Button": {
+                    "Button35742723": {
                       onClick: () => {
                         console.log(item.id)
                         nav("CommandDetail/" + item.id)
                       }
+                    },
+                    "Button36512717": {
+                      display: 'none'
                     }
                   }
                 })
