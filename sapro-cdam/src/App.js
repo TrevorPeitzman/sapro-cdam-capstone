@@ -153,7 +153,8 @@ export default function App({ signOut, user }) {
                     },
                     "Button36512717": {
                       onClick: async () => {
-                        if (window.confirm("Are you sure you want to delete the " + item.id + " checklist at this time?")) {
+                        console.log(item);
+                        if (window.confirm("Are you sure you want to delete the " + item.commandName + " checklist at this time?")) {
                           const modelToDelete = await DataStore.query(Checklist, item.id);
                           DataStore.delete(modelToDelete);
                           console.log("Checklist deleted", item.id)
