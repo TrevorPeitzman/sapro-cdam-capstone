@@ -1,16 +1,24 @@
-import React from 'react';
-import { Buffer } from 'buffer';
+import React, { useEffect, useState } from 'react';
+//import { Buffer } from 'buffer';
 //import ReactDOM from 'react-dom'; // supposedly needed for client-side generation
-import ReactPDF, { PDFDownloadLink, Document, Image, Page, Text, View, StyleSheet, Svg, Rect, G, Polyline, Circle, Path} from '@react-pdf/renderer';
-import { Grid, Box, Paper, Button, Snackbar, Alert, Menu, MenuItem, Typography } from '@mui/material';
+import ReactPDF, { usePDF, PDFDownloadLink, Document, Image, Page, Text, View, StyleSheet, Svg, Rect, G, Polyline, Line, Circle, Path} from '@react-pdf/renderer';
+import { Grid, Box, Paper, FormGroup, Checkbox, Button, Snackbar, Alert, Menu, MenuItem, Typography, FormControlLabel, FormControl, FormLabel } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { VictoryBar, VictoryPie }  from 'victory'
+//import { VictoryBar, VictoryPie }  from 'victory'
 //import ExportChart from "../utils/ExportChart";
 //import {create, useState } from 'react';
 //import { useScreenshot } from 'use-react-screenshot';
 //import arc from '../d3pielib/arc.js';
 //import pie from '../d3pielib/pie.js';
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm";
+import { DataStore } from '@aws-amplify/datastore';
+import { Checklist, ChecklistItem } from '../models';
+import { ChecklistCollection } from '../ui-components';
+import * as queries from '../graphql/queries.js'
+import { useParams, useNavigate } from 'react-router-dom';
+import { valueToPercent } from '@mui/base';
+
+
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -20,6 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
 }));
+
 
 /******************************************************************************************
  ************************************ CHART COMPONENTS ************************************
@@ -45,12 +54,38 @@ function Gp_barframe(props) {
     var s = props.s || 1
     var p = `10,10 10,${300*s} ${400*s},${300*s}`
 
+    var gridlines = []
+    for(var i; i < 10; i++) {
+        var y_coord = 300 - 20*i
+        gridlines.push(
+            <Line 
+            x1 = "10"
+            x2 = {400*s}
+            y1 = {y_coord}
+            y2 = {y_coord}
+            stroke="black"
+            strokeWidth="3"
+            /> 
+        )
+    }
+
     return (
-        <Polyline
-          points={p}//"0,0 0,300 400,300" 
-          stroke={props.color || "black"}//"black"
-          strokeWidth={4*s}
-        />
+        <G>
+            <Polyline
+            points={p}//"0,0 0,300 400,300" 
+            stroke={props.color || "black"}//"black"
+            strokeWidth={4*s}
+            />
+            <Line 
+            x1 = "10"
+            x2 = {400*s}
+            y1 = {280}
+            y2 = {280}
+            stroke="black"
+            strokeWidth="3"
+            /> 
+            {gridlines}
+        </G>
     )
 }
 
@@ -67,19 +102,29 @@ function Gp_barframe(props) {
 // add gridlines and y-axis values
 // add title
 function Gp_bar(props) {
+    var data = props.data //|| []
+    //var intermediate = null
+    //var input = props.data
+    
+   //console.log("THIS IS DATA", data)
+    //input.then((value) =>
+     //   intermediate = value
+    //)
+   //console.log("NOW..", intermediate)
+    
     var bc = props.barcolor || "black" 
     
 
     const legend_spacing = 20
     const legend_x = 350
     
-    var bdata = bar_data()
-    var bars = bdata.map((data, index) =>
-        <Gp_baritem x={20+(index*50)} y="280" f={next_color(index)} h={data} />
+    
+    var bars = data.map((d, index) =>
+        <Gp_baritem x={20+(index*50)} y="280" f={next_color(index)} h={d[1]} />
     )
 
     // legend components
-    const legend_items = bdata.map((data, index) => 
+    const legend_items = data.map((d, index) => 
         <Rect fill = {next_color(index, 2)}
             x = {30+legend_x} //"30" 
             y = {(index+1)*legend_spacing}
@@ -87,9 +132,9 @@ function Gp_bar(props) {
             height = "10"
         />
     )
-    const legend_text = bar_labels().map((label, index) =>
+    const legend_text = data.map((d, index) =>
         <Text x={50+legend_x} y = {10+(index+1)*legend_spacing} style={{fontSize:10}}> 
-            {label} 
+            {d[0]} 
         </Text>
     )
 
@@ -221,15 +266,209 @@ function Gp_pie(props) {
 }
 
 
-
-/******************************************************************************************
- ************************************ GENERATE REPORT *************************************
- ******************************************************************************************
- */
-
 export function GenerateReport() {
 
-    // report styles
+    /******************************************************************************************
+     ***************************** INTERACT WITH GRAPHQL DATABASE *****************************
+     ******************************************************************************************
+     */
+
+    /*  hit gen report
+    get array of checklists with true or false selection values
+    get all checklists with ids, use map (models.map(command))
+    command.name / command.id / command.percentCompletion
+    skip ones that are false
+    save data in array 
+    */
+
+    //var allCommands = []
+
+    const [allCmd, setCommands] = useState([])
+    const [allData, setData ] = useState([])
+    //const [ready, setReady] = useState([])
+    useEffect(() => {
+        getData()
+        //setReady(true)
+    }, [])
+
+    async function getData() {
+        const model = await DataStore.query(Checklist)
+        var res = model.map((x) =>
+            x.commandName
+        )
+        setCommands(res)
+        setData(model)
+    }
+
+    /*
+    var items = data.map((x, index) =>
+        <FormControlLabel
+            control={
+                <Checkbox checked={x.CommandName} onChange={handleChange} name={x.CommandName}/>
+            }
+            
+        /> 
+        
+    )
+    */
+
+    /*
+    function CheckGroup() {
+
+        const [state, setState] = useState({
+            c1: true,
+            c2: false,
+            c3: false,
+        })
+
+        const handleChange = (event) => {
+            setState({
+                ...state,
+                [event.target.name]: event.target.checked,
+            })
+
+        }
+
+        const {c1, c2, c3} = state;
+        const error = [c1, c2, c3].filter((v) => v).length > 5;
+
+
+
+        return (
+            <FormControl>
+                <FormGroup>
+                    
+
+                </FormGroup>
+            </FormControl>
+
+        )
+    }
+    */
+
+    
+    //console.log("DATA VAR:")
+    //console.log(data)
+
+    /*
+    var test = getData()
+    var arr = []
+    test.then((value) => {            
+            //console.log(value[0].id)
+        value.forEach(x => arr.push(x.id))
+    });
+
+   //console.log(arr)
+    */
+
+
+    /******************************************************************************************
+     ************************************* USER INTERFACE *************************************
+     ******************************************************************************************
+     */
+
+    const nav = useNavigate()
+    var user_selection = []
+    function setSel(sel) {
+        user_selection = sel
+       //console.log("test")
+    }
+
+ 
+    function SelectionUI() {
+        //while(!ready) {
+        //    continue
+        //}
+        var usr_sel = []
+
+        const data = allCmd//["a", "b", "c", "d", "e", "f"];
+       //console.log(data)
+        /*
+        var defstate = "const {"
+        data.forEach(x => 
+          defstate + " " + x + ","
+        )
+        */
+      
+        var defobj = {};
+        data.forEach((x, index) => (defobj[index] = false));
+        //defobj["gilad"] = true
+        const [state, setState] = React.useState(defobj);
+        /* 
+          {
+          gilad: true,
+          jason: false,
+          antoine: false,
+        });
+        */
+      
+        const handleChange = (event) => {
+          setState({
+            ...state,
+            [event.target.name]: event.target.checked
+          });
+        };
+
+       //console.log("state", state)
+        for (var x in state) {
+            usr_sel.push(state[x]);
+            //console.log("pushed", x, state[x]);
+        }
+        setSel(usr_sel)
+
+       //console.log(usr_sel)
+        const almosterror = usr_sel.filter((v) => v).length >= 5;
+        //updateInstance()
+
+        //updateReport(usr_sel)
+        //updateInstance()
+      
+        //console.log("states:", state);
+        
+        
+        //const { gilad, jason, antoine } = state;
+        //const error = [gilad, jason, antoine].filter((v) => v).length !== 2;
+        
+        //const error = arr.filter((v) => v).length > 5;
+      
+        //console.log("almost", error)
+      
+        return (
+          <Box sx={{ display: "flex" }}>
+            <FormControl
+              required
+              /*error={error}*/
+              component="fieldset"
+              sx={{ m: 3 }}
+              variant="standard"
+            >
+              <FormLabel component="legend">Choose Up to 5 Commands</FormLabel>
+              <FormGroup>
+                {data.map((x, index) => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={usr_sel[index]}
+                        disabled={almosterror && !usr_sel[index]}
+                        onChange={handleChange}
+                        name={index}
+                      />
+                    }
+                    label={x}
+                  />
+                ))}
+              </FormGroup>
+            </FormControl>
+          </Box>
+        );
+      }
+
+    /******************************************************************************************
+     ************************************ GENERATE REPORT *************************************
+     ******************************************************************************************
+     */
+
+      // report styles
     const styles = StyleSheet.create({
         page: {
             flexDirection: 'row',
@@ -241,12 +480,23 @@ export function GenerateReport() {
             flexGrow: 1
         }
     });
+    
+    function barData() {
+        var bardata = []
+        user_selection.forEach((x, index) => {
+            if (x == true) {
+               bardata.push([allCmd[x], allData[index].percentCompletion])
+            }
+        })
+       //console.log("bardata", bardata)
+        return bardata
+    }
 
     const timestamp = Date(Date.now)
     // ***** this needs to pull from system!!!!
     const createdBy = "[username]" 
-   
-    const Report = () => (
+    
+    var MyReport = () => (
         <Document>
             <Page size="A4" style={styles.page}>
                 <View style={styles.section}>
@@ -254,13 +504,79 @@ export function GenerateReport() {
                     <Text> SAPRO CDAM </Text>
                     <Text> {timestamp} </Text>
                     <Text> {"Created by" + createdBy} </Text>
-                    <Gp_bar barcolor="blue" />
+                    <Gp_bar 
+                        //data={barData()} 
+                        data={[["test", 10]]}
+                        barcolor="blue" />
                     <Gp_pie/>
+                    
                         
                 </View>
             </Page>
         </Document>
-    );
+    )
+    
+    //const Report = () => (
+    function Report(inputData) { 
+        return (
+        <Document>
+            <Page size="A4" style={styles.page}>
+                <View style={styles.section}>
+                    {/*SAPRO logo should be in top right hand corner*/}
+                    <Text> SAPRO CDAM </Text>
+                    <Text> {timestamp} </Text>
+                    <Text> {"Created by" + createdBy} </Text>
+                    <Gp_bar 
+                        //data={barData()} 
+                        data={inputData}//{[["test", 10]]}
+                        barcolor="blue" />
+                    <Gp_pie/>
+                   
+                        
+                </View>
+            </Page>
+        </Document>
+    )};
+    async function updateReport() {
+        var val = barData()
+        MyReport = Report(val)
+    }
+
+    const TestDoc = (
+        <Document>
+            <Page>
+                <Text> Test </Text>
+            </Page>
+        </Document>
+    )
+
+    const [instance, updateInstance] = usePDF({document: TestDoc});
+    useEffect(() => {
+        // updateInstance()
+    }, [user_selection])    
+    const Test = () => {
+        if (instance.loading) return <div>Loading ...</div>;
+
+        if (instance.error) return <div>Something went wrong: {"something"}</div>;
+      
+        return (
+          <a href={instance.url} download="test.pdf">
+            Download
+          </a>
+        );
+    }
+
+
+    
+    //const [instance, updateInstance] = usePDF({document: Report})
+    //function update(){
+    //    updateInstance()
+    //    while()
+    //}
+    //console.log("Instance", instance.url)
+    //if (instance.loading) return <p> loading </p>
+
+
 
     /* ############################################################################################
        !!!! DO NOT MODIFY THE RETURN VALUE HERE! REPORT CONTENTS ARE GIVEN IN "const Report()" !!!!
@@ -274,16 +590,38 @@ export function GenerateReport() {
             <Box sx={{ flexGrow: 1, padding: 2 }}>
                 <Grid container spacing={0}>
                     <Grid xs={8}>
+                        
                         <Item>
-                            <PDFDownloadLink document={<Report />} fileName="report.pdf">
+                            <PDFDownloadLink document={<MyReport />} fileName="report.pdf">
                                 {({blob, url, loading, error}) =>
                                     loading ? 'generating document...' : 'Download Report'
                                 }
                             </PDFDownloadLink>
+                            
+                        {/*
+                        <a href={instance.url} download="test.pdf">
+                            Download
+                        </a>
+                        <button onClick={updateInstance}> Click Me </button>
+                        */}
                         </Item> 
+                        
+                        <Test/>
+                        
+                        
+                        {/*
+                        <FormGroup>
+                            
+                        {items}
+
+                        </FormGroup>
+                            */}
+
+                        
                     </Grid>
                 </Grid>
             </Box>
+            <SelectionUI/>
         </>
     );
 }
