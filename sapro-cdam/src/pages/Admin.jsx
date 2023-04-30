@@ -4,7 +4,7 @@ import awsconfig from '../aws-exports';
 Amplify.configure(awsconfig);
 
 
-async function getGroups(username) {
+async function getGroupForUser(username) {
   let apiName = 'AdminQueries';
   let path = '/listGroupsForUser';
   let myInit = {
@@ -17,8 +17,26 @@ async function getGroups(username) {
       Authorization: `${(await Auth.currentSession()).getAccessToken().getJwtToken()}`
     }
   }
-  const response = await API.get(apiName, path, myInit);
-  return response.Groups.join(",");
+  try {
+    const response = await API.get(apiName, path, myInit);
+    console.log("buff", response.Groups[0].GroupName);
+    return String(response.Groups[0].GroupName);
+  } catch (error) {
+    return "none"
+  }
+}
+
+function getGroups(userList) {
+  // console.log("foob", userList)
+
+  let retmap = new Map();
+
+  userList.forEach(user => {
+    retmap.set(user, getGroupForUser(user))    
+  });
+
+  console.log(retmap);
+  return retmap;
 }
 
 async function disableUser(username) {
@@ -87,7 +105,7 @@ async function listUsers(limit) {
 
 function Admin() {
   const [users, setUsers] = useState([]);
-  const [usersgroups, setUsersGroups] = useState([]);
+  const [usersGroups, setUsersGroups] = useState([]);
   const [deletableGroups, setDeletableGroups] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -97,12 +115,13 @@ function Admin() {
       setIsAdmin(isUserAdmin);
       if (isUserAdmin) {
         const fetchedUsers = await listUsers();
-        const returnedGroups = await getGroups(users);
         const fetchedDeletableGroups = await getDeletableUserGroups();
         setUsers(fetchedUsers.Users);
         setDeletableGroups(fetchedDeletableGroups);
+
+        const returnedGroups = await getGroups(users);
         setUsersGroups(returnedGroups);
-        console.log("Users:", fetchedUsers.Users)
+        // console.log("Users:", fetchedUsers.Users)
       }
     }
     fetchData();
@@ -142,7 +161,8 @@ function Admin() {
                 <td>{user.Username}</td>
                 {/* NOTE: This is actually heinous, but check the log for the full visualization of the returned data structure */}
                 <td>{user.Attributes[2].Value}</td>
-                <td>{() => {const test = getGroups(user.Username); return test;}}</td> 
+                {/* <td>{(test) => {test = getGroups(user.Username); console.log("bruh", user.Username); return test;}}</td>  */}
+                {/* <td>{usersGroups}</td>  */}
                 {/* <td>
                   {deletableGroups.some(group => user.groups.includes(group)) ? (
                     <button onClick={() => handleDisableUser(user.username)}>Delete</button>
@@ -154,15 +174,15 @@ function Admin() {
             ))}
           </tbody>
         </table>
-        {/* <button onClick={() => listUsers()}>List Editors</button> */}
+        <button onClick={() => getGroups("a5371d76-8fd2-4bf4-afc5-17806d25d887")}>List Editors {() => getGroups("f62c37c5-8ff2-4ace-b6aa-e2491fc9e2b3")}</button>
       </>
     );
   } else {
     return (
       <>
         <h1>Sorry! You do not have access to this page!</h1>
-        <h2>If you think this is an error, please relax and deal with it.</h2>
-        <button onClick={() => listUsers(5)}>List Editors</button>
+        <h2>If you think this is an error, please contact an admin.</h2>
+        {/* <button onClick={() => listUsers(5)}>List Editors</button> */}
       </>
     );
   }
