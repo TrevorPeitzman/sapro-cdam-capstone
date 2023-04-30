@@ -18,34 +18,21 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-let flag = 0
-
-// export 
-
-//   // usage
-//   
-// This is the old FileUpload page!
-export function FileUploadPage() {
+export function ItemDetailsPage() {
     const [filesToUpload, setFilesToUpload] = useState([]);
     const [filesInBucket, setFilesInBucket] = useState([]);
     const [uploadSuccess, setUploadSuccess] = useState(false)
     const [uploadFailure, setUploadFailure] = useState(false)
     const [itemDetails, setItemDetails] = useState([])
+    const [flag, setFlag] = useState(0)
 
     let params = useParams()
 
-    async function getItemDetails() {
-        try {
-            let model;
-            if (flag === 0) {
-                model = await DataStore.query(ChecklistItem, { id: params.itemID });
-                // model = await DataStore.query(ChecklistItem);
-                setItemDetails(model)
-                flag++
-            }
-            // console.log(model) //TODO: this executes three times for some reason...  this may waste money unnecessarily
-            // console.log(params.id) //TODO: this executes three times for some reason...  this may waste money unnecessarily
-        } catch (err) { console.log('error fetching Checklists') }
+    function getItemDetails() {
+        if (flag <= 0) {
+            DataStore.query(ChecklistItem, { id: params.itemID }).then(r => setItemDetails(r));
+            setFlag(1)
+        }
     }
 
     const handleFileUploadError = (error) => {
@@ -71,32 +58,6 @@ export function FileUploadPage() {
         })
     }
     
-    function downloadBlob(fileKey, filename) {
-        const result = Storage.get(fileKey, { download: true });
-        const url = URL.createObjectURL(result.Body);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename || 'download';
-        const clickHandler = () => {
-            setTimeout(() => {
-                URL.revokeObjectURL(url);
-                a.removeEventListener('click', clickHandler);
-            }, 150);
-        };
-        a.addEventListener('click', clickHandler, false);
-        a.click();
-        return a;
-    }
-
-    const downloadFile = (fileKey) => {
-        const result = Storage.get(fileKey, { download: true });
-        console.log(result)
-        // downloadBlob(result.Body, fileName);
-        const url = URL.createObjectURL(result.Body);
-        console.log(url)
-        return URL.createObjectURL(result.Body);
-    }
-
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -205,4 +166,4 @@ export function FileUploadPage() {
     )
 }
 
-export default FileUploadPage;
+export default ItemDetailsPage;
