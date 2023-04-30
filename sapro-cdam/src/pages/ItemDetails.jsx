@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Storage } from 'aws-amplify'
 import { styled } from '@mui/material/styles';
 import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/react-mui-fileuploader#readme
@@ -27,7 +27,9 @@ export function ItemDetailsPage() {
     const [flag, setFlag] = useState(0)
 
     let params = useParams()
+    let alerts = 0;
 
+    // TODO: this can most likely be replaced with a useEffect statement, but the project is due tomorrow and I'm running out of dev time
     function getItemDetails() {
         if (flag <= 0) {
             DataStore.query(ChecklistItem, { id: params.itemID }).then(r => setItemDetails(r));
@@ -57,7 +59,7 @@ export function ItemDetailsPage() {
             }
         })
     }
-    
+
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
@@ -74,11 +76,24 @@ export function ItemDetailsPage() {
         // console.log(response); //TODO: Remove, for debugging only
     }
 
-    getItemDetails();
+    function alertNoFiles() {
+        if (filesInBucket.length === 0 && alerts === 0) {
+            alert("No supporting documents uploaded.\nPlease correct this before marking as complete.")
+            alerts++
+        }
+    }
+
+    useEffect(() => {
+        async function fetchData() {
+            getItemDetails();
+            listFiles();
+        }
+        fetchData();
+    }, []);
 
     return (
-        <Container>
-            <Typography variant="h4" component="h3" gutterBottom sx={{ textAlign: 'center' }} >
+        <Container onMouseLeave={alertNoFiles}>
+            <Typography variant="h4" component="h3" gutterBottom sx={{ textAlign: 'center', pt: 6 }} >
                 {itemDetails.itemName}
             </Typography>
 
@@ -111,7 +126,8 @@ export function ItemDetailsPage() {
                     Completion: {itemDetails.completion ? "Yes" : "No"}
                 </Typography>
 
-                <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
+                {/* TODO: this time should be more user friendly in terms of timezone and formatting */}
+                <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center', pb: 2 }} >
                     Last Updated: {itemDetails.updatedAt}
                 </Typography>
 
@@ -145,7 +161,7 @@ export function ItemDetailsPage() {
                     <Grid xs={8}>
                         <Item>
                             <List>
-                                <Button onClick={listFiles}>List Files</Button>
+                                <Button onClick={listFiles}>List of Files</Button>
                                 {filesInBucket.map((file) => (
                                     <ListItem key={file.key}>
                                         {/* <ListItemIcon>
