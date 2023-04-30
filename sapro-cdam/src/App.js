@@ -7,11 +7,13 @@ import './App.css';
 import awsExports from "./aws-exports";
 import React, { useEffect, useState } from 'react'
 import { Amplify, API, Auth, Hub, graphqlOperation, Storage } from 'aws-amplify'
-import { createChecklist } from './graphql/mutations'
-import { listChecklists } from './graphql/queries'
-import { useAuthenticator, Authenticator, Button, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
+import { useAuthenticator, Authenticator, Heading, View, Image, Theme, ThemeProvider, useTheme } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import { useNavigate } from 'react-router-dom';
+import Report from "./pages/Report"
+import { DataStore } from '@aws-amplify/datastore';
+import { Checklist } from './models';
+
 
 import {
   ChecklistCollection, NavBar
@@ -19,23 +21,52 @@ import {
 
 // Snackbar stuff
 import MuiAlert from '@mui/material/Alert';
-import { Snackbar, Box, Container, Typography } from '@mui/material';
+import { Snackbar, Box, Container, Typography, Button } from '@mui/material';
+import CommandDetail from './pages/CommandDetail';
+import Graphic from './pages/Graphic';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 Amplify.configure(awsExports);
 
-const initialState = { commandName: "" };
+let globalUser;
+
+async function getUserGroups() {
+  try {
+    const user = await Auth.currentAuthenticatedUser();
+    globalUser = user;
+    const accessToken = user.signInUserSession.accessToken;
+    const groups = accessToken.payload['cognito:groups'];
+    console.log('First User group:', groups[0]);
+    return groups;
+  } catch (error) {
+    console.error('Error retrieving user groups. User is most likely not in a group.\n\n', error);
+    return [""];
+  }
+}
 
 export default function App({ signOut, user }) {
-  const [formState, setFormState] = useState([])
-  const [Checklists, setChecklists] = useState([])
-  const [filesState, setFileState] = useState([])
-  // const { user, signOut } = useAuthenticator((context) => [context.user])
+  const [commandersChecklist, setCDRChecklist] = useState([])
+  const [groups, setGroups] = useState([]);
+
   const { route } = useAuthenticator(context => [context.route])
 
   const nav = useNavigate()
+
+  useEffect(() => {
+    async function fetchData() {
+      const groups = await getUserGroups();
+      const user = await Auth.currentAuthenticatedUser();
+
+      // TODO: WARNING! This only takes the first item in the returned groups array. If this becomes a problem, change it ;)
+      setGroups(groups[0])
+
+      const checklist = await DataStore.query(Checklist, (c) => c.commandPOCEmail.eq(user.attributes.email))
+      setCDRChecklist(checklist[0])
+    }
+    fetchData();
+  }, []);
 
   const components = {
     Header() {
@@ -69,7 +100,6 @@ export default function App({ signOut, user }) {
           attributes,
         });
       } else {
-        // console.log("email check fail");
         // TODO: fix this to make it a bit cleaner of an error than a popup message
         // alert("This email domain is not permitted. Please sign up with a permitted email.");
         <Snackbar open={true} anchorOrigin={{ vertical: "top", horizontal: "center" }}>
@@ -87,99 +117,12 @@ export default function App({ signOut, user }) {
     },
   }
 
-  // useEffect(() => {
-  //   fetchChecklists()
-  // }, [])
-
-  // function setInput(key, value) {
-  //   setFormState({ ...formState, [key]: value })
-  // }
-
-  // async function fetchChecklists() {
-  //   try {
-  //     const checklistData = await API.graphql(graphqlOperation(listChecklists))
-  //     const Checklists = checklistData.data.listChecklists.items
-  //     setChecklists(Checklists)
-  //   } catch (err) { console.log('error fetching Checklists') }
-  // }
-
-  async function addChecklist() {
-    try {
-      const checklist = { ...formState }
-      console.log(checklist)
-      if (!formState.commandName) {
-        console.log("Not enough info supplied to create, try again.") //TODO: fix this so that it is a snackbar or error message popup
-        return
-      }
-      setChecklists([...Checklists, checklist])
-      setFormState(initialState)
-      document.getElementById("chklst_create").reset()
-      console.log(checklist)
-      await API.graphql(graphqlOperation(createChecklist, { input: checklist }))
-    } catch (err) {
-      console.log('error creating checklist:', err)
-    }
-  }
-
-  async function uploadFile(e) {
-    const file = e.target.files[0];
-    try {
-      await Storage.put(file.name, file);
-      <Snackbar open={true} anchorOrigin={{ vertical: "top", horizontal: "center" }} message="Upload Successful" autoHideDuration={6000} />
-    } catch (error) {
-      console.log("Error uploading file: ", error);
-      <Snackbar open={true} anchorOrigin={{ vertical: "top", horizontal: "center" }} message="Upload Unsuccessful" />
-    }
-  }
-
-  async function listFiles() {
-    const files = await Storage.list('')
-    let signedFiles = files.map(f => Storage.get(f.key))
-    signedFiles = await Promise.all(signedFiles)
-    console.log('signedFiles: ', signedFiles)
-    console.log('Files: ', files)
-    setFileState([...filesState, files])
-
-    // {files.map((f) => (
-    //   <Button
-    //       key={f.key}
-    //       sx={{ my: 2, color: 'white', display: 'block' }}123
-    //       component="a" 
-    //       to={signedFiles}
-    //   >
-    //       {f.key}
-    //   </Button>
-    // ))}
-  }
-
-  async function downloadBlob(blob, filename) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename || 'download';
-    const clickHandler = () => {
-      setTimeout(() => {
-        URL.revokeObjectURL(url);
-        a.removeEventListener('click', clickHandler);
-      }, 150);
-    };
-    a.addEventListener('click', clickHandler, false);
-    a.click();
-    return a;
-  }
-
-  async function download(fileKey) {
-    const result = await Storage.get(fileKey, { download: true });
-    downloadBlob(result.Body, 'filename');
-  }
-
   return (
     <Authenticator services={services} components={components} initialState="signIn">
 
       {/*TODO: this is kinda a shitty way of discovering if the user is authenticated, potentially change this */}
-      {route === 'authenticated' &&
+      {route === 'authenticated' && groups.includes('Administrators') &&
         <main>
-          {/* Hero unit */}
           <Box
             sx={{
               bgcolor: '#D3D3D3',
@@ -195,18 +138,35 @@ export default function App({ signOut, user }) {
                 color="text.primary"
                 gutterBottom
               >
-                Command Search
+                Admin Command Search
               </Typography>
             </Container>
 
-            <Container maxWidth="sm" sx={{ pt: 6, pb: 6 }}>
+            <Container maxWidth="xs" sx={{ bgcolor: '#D3D3D3', pt: 0, pb: 0, alignItems: 'center' }}>
+              <Button variant='contained' fullWidth onClick={() => { nav("/Admin") }}>Add command to list</Button>
+            </Container>
+
+            {/* TODO: Figure out a way to center this */}
+            <Container maxWidth="sm" sx={{ pt: 4, pb: 6 }}>
               <ChecklistCollection
                 overrideItems={({ item }) => ({
                   overrides: {
-                    "Button": {
+                    "Button35742723": {
                       onClick: () => {
-                        console.log(item.id)
+                        // console.log(item.id)
                         nav("CommandDetail/" + item.id)
+                      }
+                    },
+                    "Button36512717": {
+                      onClick: async () => {
+                        // console.log(item);
+                        if (window.confirm("Are you sure you want to delete the " + item.commandName + " checklist at this time? \n All progress on this command will be lost.")) {
+                          const modelToDelete = await DataStore.query(Checklist, item.id);
+                          DataStore.delete(modelToDelete);
+                          console.log("Checklist deleted", item.id)
+                        } else {
+                          console.log("checklist deletion aborted");
+                        }
                       }
                     }
                   }
@@ -217,6 +177,113 @@ export default function App({ signOut, user }) {
           </Box>
         </main>
       }
+
+      {route === 'authenticated' && groups.includes('SAPRO-Auditors') &&
+        <main>
+          <Box
+            sx={{
+              bgcolor: '#D3D3D3',
+              pt: 8,
+              pb: 6,
+            }}
+          >
+            <Container maxWidth="sm">
+              <Typography
+                component="h1"
+                variant="h2"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                Auditor's Command Search
+              </Typography>
+            </Container>
+
+            <Container maxWidth="sm" sx={{ pt: 6, pb: 6 }}>
+              <ChecklistCollection
+                overrideItems={({ item }) => ({
+                  overrides: {
+                    "Button35742723": {
+                      onClick: () => {
+                        console.log(item.id)
+                        nav("CommandDetail/" + item.id)
+                      }
+                    },
+                    "Button36512717": {
+                      display: 'none'
+                    }
+                  }
+                })
+                }
+              />
+            </Container>
+          </Box>
+        </main>
+      }
+
+      {route === 'authenticated' && groups.includes('Installation-Commanders') &&
+        <main>
+          <Container maxWidth="sx">
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              {commandersChecklist.commandName} Installation Commander Dashboard
+            </Typography>
+          </Container>  
+          {/* TODO: add input data to these two below functions from the commandersChecklist object in order to fulfill dashboard requirements */}
+          <Report />
+          <Graphic />
+        </main>
+      }
+
+      {route === 'authenticated' && groups.includes('Work-Center-Admins') &&
+        <main>
+          <Container maxWidth="sx">
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              Work Center Admin Dashboard
+            </Typography>
+          </Container>
+          {/* TODO: Determine how to store and pass the id associated with the installation the Work Center Admin is in charge of */}
+          <CommandDetail />
+        </main>
+      }
+
+      {route === 'authenticated' && groups.length === 0 &&
+        <main>
+          <Container maxWidth="sx">
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              You are not currently in a group!
+            </Typography>
+
+            <Typography
+              component="p"
+              variant="p"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              If you're seeing this in error, please refresh the page. If that doesn't work, contact the devs.
+            </Typography>
+          </Container>
+        </main>
+      }
+
     </Authenticator>
   )
 };

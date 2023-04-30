@@ -26,7 +26,6 @@ export const onCreateChecklist = /* GraphQL */ `
           _deleted
           _lastChangedAt
           checklistChecklistItemsId
-          checklistItemSupportingDocumentsId
         }
         nextToken
         startedAt
@@ -65,7 +64,6 @@ export const onUpdateChecklist = /* GraphQL */ `
           _deleted
           _lastChangedAt
           checklistChecklistItemsId
-          checklistItemSupportingDocumentsId
         }
         nextToken
         startedAt
@@ -104,7 +102,6 @@ export const onDeleteChecklist = /* GraphQL */ `
           _deleted
           _lastChangedAt
           checklistChecklistItemsId
-          checklistItemSupportingDocumentsId
         }
         nextToken
         startedAt
@@ -147,42 +144,12 @@ export const onCreateChecklistItem = /* GraphQL */ `
       reference
       tier
       responsibleParty
-      supportingDocuments {
-        id
-        checklistItem {
-          id
-          itemName
-          completion
-          mandatory
-          description
-          reference
-          tier
-          responsibleParty
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          checklistChecklistItemsId
-          checklistItemSupportingDocumentsId
-        }
-        filename
-        fileURL
-        author
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        supportingDocumentChecklistItemId
-      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       checklistChecklistItemsId
-      checklistItemSupportingDocumentsId
     }
   }
 `;
@@ -215,42 +182,12 @@ export const onUpdateChecklistItem = /* GraphQL */ `
       reference
       tier
       responsibleParty
-      supportingDocuments {
-        id
-        checklistItem {
-          id
-          itemName
-          completion
-          mandatory
-          description
-          reference
-          tier
-          responsibleParty
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          checklistChecklistItemsId
-          checklistItemSupportingDocumentsId
-        }
-        filename
-        fileURL
-        author
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        supportingDocumentChecklistItemId
-      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       checklistChecklistItemsId
-      checklistItemSupportingDocumentsId
     }
   }
 `;
@@ -283,219 +220,63 @@ export const onDeleteChecklistItem = /* GraphQL */ `
       reference
       tier
       responsibleParty
-      supportingDocuments {
-        id
-        checklistItem {
-          id
-          itemName
-          completion
-          mandatory
-          description
-          reference
-          tier
-          responsibleParty
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          checklistChecklistItemsId
-          checklistItemSupportingDocumentsId
-        }
-        filename
-        fileURL
-        author
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        supportingDocumentChecklistItemId
-      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       checklistChecklistItemsId
-      checklistItemSupportingDocumentsId
     }
   }
 `;
-export const onCreateSupportingDocument = /* GraphQL */ `
-  subscription OnCreateSupportingDocument(
-    $filter: ModelSubscriptionSupportingDocumentFilterInput
+export const onCreateAccessRequestList = /* GraphQL */ `
+  subscription OnCreateAccessRequestList(
+    $filter: ModelSubscriptionAccessRequestListFilterInput
   ) {
-    onCreateSupportingDocument(filter: $filter) {
+    onCreateAccessRequestList(filter: $filter) {
       id
-      checklistItem {
-        id
-        checklist {
-          id
-          commandName
-          commandPOC
-          commandPOCEmail
-          percentCompletion
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        itemName
-        completion
-        mandatory
-        description
-        reference
-        tier
-        responsibleParty
-        supportingDocuments {
-          id
-          filename
-          fileURL
-          author
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          supportingDocumentChecklistItemId
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        checklistChecklistItemsId
-        checklistItemSupportingDocumentsId
-      }
-      filename
-      fileURL
-      author
+      userID
+      email
+      reason
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      supportingDocumentChecklistItemId
     }
   }
 `;
-export const onUpdateSupportingDocument = /* GraphQL */ `
-  subscription OnUpdateSupportingDocument(
-    $filter: ModelSubscriptionSupportingDocumentFilterInput
+export const onUpdateAccessRequestList = /* GraphQL */ `
+  subscription OnUpdateAccessRequestList(
+    $filter: ModelSubscriptionAccessRequestListFilterInput
   ) {
-    onUpdateSupportingDocument(filter: $filter) {
+    onUpdateAccessRequestList(filter: $filter) {
       id
-      checklistItem {
-        id
-        checklist {
-          id
-          commandName
-          commandPOC
-          commandPOCEmail
-          percentCompletion
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        itemName
-        completion
-        mandatory
-        description
-        reference
-        tier
-        responsibleParty
-        supportingDocuments {
-          id
-          filename
-          fileURL
-          author
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          supportingDocumentChecklistItemId
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        checklistChecklistItemsId
-        checklistItemSupportingDocumentsId
-      }
-      filename
-      fileURL
-      author
+      userID
+      email
+      reason
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      supportingDocumentChecklistItemId
     }
   }
 `;
-export const onDeleteSupportingDocument = /* GraphQL */ `
-  subscription OnDeleteSupportingDocument(
-    $filter: ModelSubscriptionSupportingDocumentFilterInput
+export const onDeleteAccessRequestList = /* GraphQL */ `
+  subscription OnDeleteAccessRequestList(
+    $filter: ModelSubscriptionAccessRequestListFilterInput
   ) {
-    onDeleteSupportingDocument(filter: $filter) {
+    onDeleteAccessRequestList(filter: $filter) {
       id
-      checklistItem {
-        id
-        checklist {
-          id
-          commandName
-          commandPOC
-          commandPOCEmail
-          percentCompletion
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        itemName
-        completion
-        mandatory
-        description
-        reference
-        tier
-        responsibleParty
-        supportingDocuments {
-          id
-          filename
-          fileURL
-          author
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          supportingDocumentChecklistItemId
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        checklistChecklistItemsId
-        checklistItemSupportingDocumentsId
-      }
-      filename
-      fileURL
-      author
+      userID
+      email
+      reason
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      supportingDocumentChecklistItemId
     }
   }
 `;
