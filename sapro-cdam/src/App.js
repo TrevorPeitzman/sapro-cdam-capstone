@@ -23,17 +23,19 @@ import {
 import MuiAlert from '@mui/material/Alert';
 import { Snackbar, Box, Container, Typography, Button } from '@mui/material';
 import CommandDetail from './pages/CommandDetail';
+import Graphic from './pages/Graphic';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 Amplify.configure(awsExports);
 
-const initialState = { commandName: "" };
+let globalUser;
 
 async function getUserGroups() {
   try {
     const user = await Auth.currentAuthenticatedUser();
+    globalUser = user;
     const accessToken = user.signInUserSession.accessToken;
     const groups = accessToken.payload['cognito:groups'];
     console.log('First User group:', groups[0]);
@@ -45,8 +47,7 @@ async function getUserGroups() {
 }
 
 export default function App({ signOut, user }) {
-  const [formState, setFormState] = useState([])
-  const [Checklists, setChecklists] = useState([])
+  const [commandersChecklist, setCDRChecklist] = useState([])
   const [groups, setGroups] = useState([]);
 
   const { route } = useAuthenticator(context => [context.route])
@@ -56,8 +57,13 @@ export default function App({ signOut, user }) {
   useEffect(() => {
     async function fetchData() {
       const groups = await getUserGroups();
+      const user = await Auth.currentAuthenticatedUser();
+
       // TODO: WARNING! This only takes the first item in the returned groups array. If this becomes a problem, change it ;)
       setGroups(groups[0])
+
+      const checklist = await DataStore.query(Checklist, (c) => c.commandPOCEmail.eq(user.attributes.email))
+      setCDRChecklist(checklist[0])
     }
     fetchData();
   }, []);
@@ -147,13 +153,13 @@ export default function App({ signOut, user }) {
                   overrides: {
                     "Button35742723": {
                       onClick: () => {
-                        console.log(item.id)
+                        // console.log(item.id)
                         nav("CommandDetail/" + item.id)
                       }
                     },
                     "Button36512717": {
                       onClick: async () => {
-                        console.log(item);
+                        // console.log(item);
                         if (window.confirm("Are you sure you want to delete the " + item.commandName + " checklist at this time? \n All progress on this command will be lost.")) {
                           const modelToDelete = await DataStore.query(Checklist, item.id);
                           DataStore.delete(modelToDelete);
@@ -225,12 +231,12 @@ export default function App({ signOut, user }) {
               color="text.primary"
               gutterBottom
             >
-              Installation Commander Dashboard
+              {commandersChecklist.commandName} Installation Commander Dashboard
             </Typography>
-          </Container>
-          {/* TODO: Determine how to store and pass the id associated with the installation the commander is in charge of */}
-          {/* const model = await DataStore.query(Checklist, (c) => c.commandName.eq("Maryland")); */}
+          </Container>  
+          {/* TODO: add input data to these two below functions from the commandersChecklist object in order to fulfill dashboard requirements */}
           <Report />
+          <Graphic />
         </main>
       }
 
@@ -263,6 +269,16 @@ export default function App({ signOut, user }) {
               gutterBottom
             >
               You are not currently in a group!
+            </Typography>
+
+            <Typography
+              component="p"
+              variant="p"
+              align="center"
+              color="text.primary"
+              gutterBottom
+            >
+              If you're seeing this in error, please refresh the page. If that doesn't work, contact the devs.
             </Typography>
           </Container>
         </main>
