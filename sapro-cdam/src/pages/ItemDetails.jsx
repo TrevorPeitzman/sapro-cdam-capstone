@@ -147,7 +147,7 @@ export function FileUploadPage() {
                 </Typography>
 
                 <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
-                    Completion: {itemDetails.completion}
+                    Completion: {itemDetails.completion ? "Yes" : "No"}
                 </Typography>
 
                 <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
