@@ -70,7 +70,6 @@ export function ItemDetailsPage() {
     };
 
     async function listFiles() {
-        // for listing ALL files without prefix, pass '' instead. TODO: eventually have this be a command/item-specific directory
         const response = await Storage.list(params.id + "/" + params.itemID + "/");
         setFilesInBucket(response.results);
         // console.log(response); //TODO: Remove, for debugging only
