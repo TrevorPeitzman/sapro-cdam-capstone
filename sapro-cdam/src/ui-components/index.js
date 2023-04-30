@@ -38,6 +38,7 @@ export { default as ChecklistItem } from "./ChecklistItem";
 export { default as Features4x1 } from "./Features4x1";
 export { default as StandardCard } from "./StandardCard";
 export { default as studioTheme } from "./studioTheme";
+export { default as AccessRequestListCreateForm } from "./AccessRequestListCreateForm";
 export { default as RequestAdminAccess } from "./RequestAdminAccess";
 export { default as ChecklistUpdateForm } from "./ChecklistUpdateForm";
 export { default as ChecklistCreateForm } from "./ChecklistCreateForm";
