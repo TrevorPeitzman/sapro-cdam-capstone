@@ -39,8 +39,8 @@ async function getUserGroups() {
     console.log('First User group:', groups[0]);
     return groups;
   } catch (error) {
-    console.error('Error retrieving user groups:', error);
-    return [];
+    console.error('Error retrieving user groups. User is most likely not in a group.\n\n', error);
+    return [""];
   }
 }
 
@@ -154,7 +154,7 @@ export default function App({ signOut, user }) {
                     "Button36512717": {
                       onClick: async () => {
                         console.log(item);
-                        if (window.confirm("Are you sure you want to delete the " + item.commandName + " checklist at this time?")) {
+                        if (window.confirm("Are you sure you want to delete the " + item.commandName + " checklist at this time? \n All progress on this command will be lost.")) {
                           const modelToDelete = await DataStore.query(Checklist, item.id);
                           DataStore.delete(modelToDelete);
                           console.log("Checklist deleted", item.id)
@@ -229,6 +229,7 @@ export default function App({ signOut, user }) {
             </Typography>
           </Container>
           {/* TODO: Determine how to store and pass the id associated with the installation the commander is in charge of */}
+          {/* const model = await DataStore.query(Checklist, (c) => c.commandName.eq("Maryland")); */}
           <Report />
         </main>
       }
