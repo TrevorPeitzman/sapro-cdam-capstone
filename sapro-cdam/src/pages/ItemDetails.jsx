@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Storage } from 'aws-amplify'
 import { styled } from '@mui/material/styles';
 import FileUpload from "react-mui-fileuploader" //https://github.com/rouftom/react-mui-fileuploader#readme
@@ -18,30 +18,23 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
 }));
 
-let flag = 0
-
-// This is the old FileUpload page!
-export function FileUploadPage() {
+export function ItemDetailsPage() {
     const [filesToUpload, setFilesToUpload] = useState([]);
     const [filesInBucket, setFilesInBucket] = useState([]);
     const [uploadSuccess, setUploadSuccess] = useState(false)
     const [uploadFailure, setUploadFailure] = useState(false)
     const [itemDetails, setItemDetails] = useState([])
+    const [flag, setFlag] = useState(0)
 
     let params = useParams()
+    let alerts = 0;
 
-    async function getItemDetails() {
-        try {
-            let model;
-            if (flag === 0) {
-                model = await DataStore.query(ChecklistItem, { id: params.itemID });
-                // model = await DataStore.query(ChecklistItem);
-                setItemDetails(model)
-                flag++
-            }
-            // console.log(model) //TODO: this executes three times for some reason...  this may waste money unnecessarily
-            // console.log(params.id) //TODO: this executes three times for some reason...  this may waste money unnecessarily
-        } catch (err) { console.log('error fetching Checklists') }
+    // TODO: this can most likely be replaced with a useEffect statement, but the project is due tomorrow and I'm running out of dev time
+    function getItemDetails() {
+        if (flag <= 0) {
+            DataStore.query(ChecklistItem, { id: params.itemID }).then(r => setItemDetails(r));
+            setFlag(1)
+        }
     }
 
     const handleFileUploadError = (error) => {
@@ -77,17 +70,29 @@ export function FileUploadPage() {
     };
 
     async function listFiles() {
-        // for listing ALL files without prefix, pass '' instead. TODO: eventually have this be a command/item-specific directory
         const response = await Storage.list(params.id + "/" + params.itemID + "/");
         setFilesInBucket(response.results);
         // console.log(response); //TODO: Remove, for debugging only
     }
 
-    getItemDetails();
+    function alertNoFiles() {
+        if (filesInBucket.length === 0 && alerts === 0) {
+            alert("No supporting documents uploaded.\nPlease correct this before marking as complete.")
+            alerts++
+        }
+    }
+
+    useEffect(() => {
+        async function fetchData() {
+            getItemDetails();
+            listFiles();
+        }
+        fetchData();
+    }, []);
 
     return (
-        <Container>
-            <Typography variant="h4" component="h3" gutterBottom sx={{ textAlign: 'center' }} >
+        <Container onMouseLeave={alertNoFiles}>
+            <Typography variant="h4" component="h3" gutterBottom sx={{ textAlign: 'center', pt: 6 }} >
                 {itemDetails.itemName}
             </Typography>
 
@@ -111,16 +116,17 @@ export function FileUploadPage() {
                 <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
                     Reference: {itemDetails.reference}
                 </Typography>
-                
+
                 <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
                     Tier: {itemDetails.tier}
                 </Typography>
 
                 <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
-                    Completion: {itemDetails.completion}
+                    Completion: {itemDetails.completion ? "Yes" : "No"}
                 </Typography>
 
-                <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center' }} >
+                {/* TODO: this time should be more user friendly in terms of timezone and formatting */}
+                <Typography variant="p" component="p" gutterBottom sx={{ textAlign: 'center', pb: 2 }} >
                     Last Updated: {itemDetails.updatedAt}
                 </Typography>
 
@@ -154,7 +160,7 @@ export function FileUploadPage() {
                     <Grid xs={8}>
                         <Item>
                             <List>
-                                <Button onClick={listFiles}>List Files</Button>
+                                <Button onClick={listFiles}>List of Files</Button>
                                 {filesInBucket.map((file) => (
                                     <ListItem key={file.key}>
                                         {/* <ListItemIcon>
@@ -162,7 +168,7 @@ export function FileUploadPage() {
                                         </ListItemIcon> */}
                                         {/* TODO: Need permissions in S3 to be set properly in order for this to work */}
                                         <ListItemButton component="a" href={"https://sapro-cdam-document-store12606-dev.s3.amazonaws.com/public/" + file.key} target="_blank">
-                                            <ListItemText primary={file.key} />
+                                            <ListItemText primary={file.key.split("/")[2]} />
                                         </ListItemButton>
                                     </ListItem>
                                 ))}
@@ -175,4 +181,4 @@ export function FileUploadPage() {
     )
 }
 
-export default FileUploadPage;
+export default ItemDetailsPage;

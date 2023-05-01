@@ -11,7 +11,7 @@ import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { AccessRequestList } from "../models";
 import { fetchByPath, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
-export default function RequestAdminAccess(props) {
+export default function AccessRequestListCreateForm(props) {
   const {
     clearOnSuccess = true,
     onSuccess,
@@ -23,22 +23,18 @@ export default function RequestAdminAccess(props) {
     ...rest
   } = props;
   const initialValues = {
-    userID: "",
     email: "",
     reason: "",
   };
-  const [userID, setUserID] = React.useState(initialValues.userID);
   const [email, setEmail] = React.useState(initialValues.email);
   const [reason, setReason] = React.useState(initialValues.reason);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    setUserID(initialValues.userID);
     setEmail(initialValues.email);
     setReason(initialValues.reason);
     setErrors({});
   };
   const validations = {
-    userID: [{ type: "Required" }],
     email: [{ type: "Required" }, { type: "Email" }],
     reason: [],
   };
@@ -68,7 +64,6 @@ export default function RequestAdminAccess(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          userID,
           email,
           reason,
         };
@@ -113,35 +108,9 @@ export default function RequestAdminAccess(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "RequestAdminAccess")}
+      {...getOverrideProps(overrides, "AccessRequestListCreateForm")}
       {...rest}
     >
-      <TextField
-        label="User id"
-        isRequired={true}
-        isReadOnly={false}
-        value={userID}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              userID: value,
-              email,
-              reason,
-            };
-            const result = onChange(modelFields);
-            value = result?.userID ?? value;
-          }
-          if (errors.userID?.hasError) {
-            runValidationTasks("userID", value);
-          }
-          setUserID(value);
-        }}
-        onBlur={() => runValidationTasks("userID", userID)}
-        errorMessage={errors.userID?.errorMessage}
-        hasError={errors.userID?.hasError}
-        {...getOverrideProps(overrides, "userID")}
-      ></TextField>
       <TextField
         label="Email"
         isRequired={true}
@@ -151,7 +120,6 @@ export default function RequestAdminAccess(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              userID,
               email: value,
               reason,
             };
@@ -177,7 +145,6 @@ export default function RequestAdminAccess(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              userID,
               email,
               reason: value,
             };

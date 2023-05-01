@@ -2,11 +2,14 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./pages/Layout";
 import About from "./pages/About";
+import Account from "./pages/Account";
 import Admin from "./pages/Admin";
 import Account from "./pages/Account";
 import Contact from "./pages/Contact";
 import Logout from "./pages/Logout";
 import NoPage from "./pages/NoPage";
+import Graphic from "./pages/Graphic";
+import Report from "./pages/Report"
 import ItemDetails from "./pages/ItemDetails";
 import Dashboard from "./pages/Dashboard";
 import App from './App';
@@ -33,6 +36,9 @@ function Router() {
                             <Route path="CommandDetail/:id/:itemID" element={<ItemDetails />} />
                             <Route path="Account" element={<Account />} />
                             <Route path="Admin" element={<Admin />} />
+                            <Route path="Account" element={<Account />} />
+                            <Route path="Graphic" element={<Graphic />} />
+                            <Route path="Report" element={<Report />} />
                         </>
                     }
                     <Route path="about" element={<About />} />

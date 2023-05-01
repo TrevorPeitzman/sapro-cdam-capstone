@@ -26,6 +26,12 @@
       },
       "storage": {
         "saproCDAMDocumentStore": {}
+      },
+      "function": {
+        "AdminQueries9b28f10b": {
+          "deploymentBucketName": "amplify-saprocdam-dev-12606-deployment",
+          "s3Key": "amplify-builds/AdminQueries9b28f10b-2f466d6955797a526164-build.zip"
+        }
       }
     }
   }

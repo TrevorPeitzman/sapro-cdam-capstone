@@ -14,7 +14,7 @@ import { DataStore } from "aws-amplify";
 export default function AccessRequestListUpdateForm(props) {
   const {
     id: idProp,
-    accessRequestList,
+    accessRequestList: accessRequestListModelProp,
     onSuccess,
     onError,
     onSubmit,
@@ -41,17 +41,18 @@ export default function AccessRequestListUpdateForm(props) {
     setReason(cleanValues.reason);
     setErrors({});
   };
-  const [accessRequestListRecord, setAccessRequestListRecord] =
-    React.useState(accessRequestList);
+  const [accessRequestListRecord, setAccessRequestListRecord] = React.useState(
+    accessRequestListModelProp
+  );
   React.useEffect(() => {
     const queryData = async () => {
       const record = idProp
         ? await DataStore.query(AccessRequestList, idProp)
-        : accessRequestList;
+        : accessRequestListModelProp;
       setAccessRequestListRecord(record);
     };
     queryData();
-  }, [idProp, accessRequestList]);
+  }, [idProp, accessRequestListModelProp]);
   React.useEffect(resetStateValues, [accessRequestListRecord]);
   const validations = {
     userID: [{ type: "Required" }],
@@ -63,9 +64,10 @@ export default function AccessRequestListUpdateForm(props) {
     currentValue,
     getDisplayValue
   ) => {
-    const value = getDisplayValue
-      ? getDisplayValue(currentValue)
-      : currentValue;
+    const value =
+      currentValue && getDisplayValue
+        ? getDisplayValue(currentValue)
+        : currentValue;
     let validationResponse = validateField(value, validations[fieldName]);
     const customValidator = fetchByPath(onValidate, fieldName);
     if (customValidator) {
@@ -221,7 +223,7 @@ export default function AccessRequestListUpdateForm(props) {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || accessRequestList)}
+          isDisabled={!(idProp || accessRequestListModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
@@ -233,7 +235,7 @@ export default function AccessRequestListUpdateForm(props) {
             type="submit"
             variation="primary"
             isDisabled={
-              !(idProp || accessRequestList) ||
+              !(idProp || accessRequestListModelProp) ||
               Object.values(errors).some((e) => e?.hasError)
             }
             {...getOverrideProps(overrides, "SubmitButton")}

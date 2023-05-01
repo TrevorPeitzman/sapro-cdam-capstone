@@ -24,7 +24,6 @@ export const getChecklist = /* GraphQL */ `
           _deleted
           _lastChangedAt
           checklistChecklistItemsId
-          checklistItemSupportingDocumentsId
         }
         nextToken
         startedAt
@@ -127,42 +126,12 @@ export const getChecklistItem = /* GraphQL */ `
       reference
       tier
       responsibleParty
-      supportingDocuments {
-        id
-        checklistItem {
-          id
-          itemName
-          completion
-          mandatory
-          description
-          reference
-          tier
-          responsibleParty
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          checklistChecklistItemsId
-          checklistItemSupportingDocumentsId
-        }
-        filename
-        fileURL
-        author
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        supportingDocumentChecklistItemId
-      }
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
       checklistChecklistItemsId
-      checklistItemSupportingDocumentsId
     }
   }
 `;
@@ -194,25 +163,12 @@ export const listChecklistItems = /* GraphQL */ `
         reference
         tier
         responsibleParty
-        supportingDocuments {
-          id
-          filename
-          fileURL
-          author
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          supportingDocumentChecklistItemId
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
         checklistChecklistItemsId
-        checklistItemSupportingDocumentsId
       }
       nextToken
       startedAt
@@ -253,141 +209,68 @@ export const syncChecklistItems = /* GraphQL */ `
         reference
         tier
         responsibleParty
-        supportingDocuments {
-          id
-          filename
-          fileURL
-          author
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          supportingDocumentChecklistItemId
-        }
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
         checklistChecklistItemsId
-        checklistItemSupportingDocumentsId
       }
       nextToken
       startedAt
     }
   }
 `;
-export const getSupportingDocument = /* GraphQL */ `
-  query GetSupportingDocument($id: ID!) {
-    getSupportingDocument(id: $id) {
+export const getAccessRequestList = /* GraphQL */ `
+  query GetAccessRequestList($id: ID!) {
+    getAccessRequestList(id: $id) {
       id
-      checklistItem {
-        id
-        checklist {
-          id
-          commandName
-          commandPOC
-          commandPOCEmail
-          percentCompletion
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-        }
-        itemName
-        completion
-        mandatory
-        description
-        reference
-        tier
-        responsibleParty
-        supportingDocuments {
-          id
-          filename
-          fileURL
-          author
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          supportingDocumentChecklistItemId
-        }
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-        checklistChecklistItemsId
-        checklistItemSupportingDocumentsId
-      }
-      filename
-      fileURL
-      author
+      userID
+      email
+      reason
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      supportingDocumentChecklistItemId
     }
   }
 `;
-export const listSupportingDocuments = /* GraphQL */ `
-  query ListSupportingDocuments(
-    $filter: ModelSupportingDocumentFilterInput
+export const listAccessRequestLists = /* GraphQL */ `
+  query ListAccessRequestLists(
+    $filter: ModelAccessRequestListFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listSupportingDocuments(
+    listAccessRequestLists(
       filter: $filter
       limit: $limit
       nextToken: $nextToken
     ) {
       items {
         id
-        checklistItem {
-          id
-          itemName
-          completion
-          mandatory
-          description
-          reference
-          tier
-          responsibleParty
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          checklistChecklistItemsId
-          checklistItemSupportingDocumentsId
-        }
-        filename
-        fileURL
-        author
+        userID
+        email
+        reason
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
-        supportingDocumentChecklistItemId
       }
       nextToken
       startedAt
     }
   }
 `;
-export const syncSupportingDocuments = /* GraphQL */ `
-  query SyncSupportingDocuments(
-    $filter: ModelSupportingDocumentFilterInput
+export const syncAccessRequestLists = /* GraphQL */ `
+  query SyncAccessRequestLists(
+    $filter: ModelAccessRequestListFilterInput
     $limit: Int
     $nextToken: String
     $lastSync: AWSTimestamp
   ) {
-    syncSupportingDocuments(
+    syncAccessRequestLists(
       filter: $filter
       limit: $limit
       nextToken: $nextToken
@@ -395,32 +278,14 @@ export const syncSupportingDocuments = /* GraphQL */ `
     ) {
       items {
         id
-        checklistItem {
-          id
-          itemName
-          completion
-          mandatory
-          description
-          reference
-          tier
-          responsibleParty
-          createdAt
-          updatedAt
-          _version
-          _deleted
-          _lastChangedAt
-          checklistChecklistItemsId
-          checklistItemSupportingDocumentsId
-        }
-        filename
-        fileURL
-        author
+        userID
+        email
+        reason
         createdAt
         updatedAt
         _version
         _deleted
         _lastChangedAt
-        supportingDocumentChecklistItemId
       }
       nextToken
       startedAt

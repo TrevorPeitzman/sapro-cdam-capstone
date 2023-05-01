@@ -96,6 +96,22 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_AdminQueries9b28f10b_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueries9b28f10b"
+        }
+      ]
+    },
+    "AMPLIFY_function_AdminQueries9b28f10b_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AdminQueries9b28f10b"
+        }
+      ]
+    },
     "AMPLIFY_hosting_amplifyhosting_appId": {
       "usedBy": [
         {
