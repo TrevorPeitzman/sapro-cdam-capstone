@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Amplify, Auth, API } from 'aws-amplify';
 import awsconfig from '../aws-exports';
+import '../style.css';
+// import {Table} from 'antd';
 Amplify.configure(awsconfig);
 
 
-async function getGroups(username) {
+async function disableUser(username) {
   let apiName = 'AdminQueries';
-  let path = '/listGroupsForUser';
+  let path = '/disableUser';
   let myInit = {
-    queryStringParameters: {
-      // "groupname": "Administrators",
+    body: {
       "username": username
     },
     headers: {
@@ -17,28 +18,26 @@ async function getGroups(username) {
       Authorization: `${(await Auth.currentSession()).getAccessToken().getJwtToken()}`
     }
   }
-  const response = await API.get(apiName, path, myInit);
-  return response.Groups.join(",");
+  
+  const response = await API.post(apiName, path, myInit);
+  return response;
 }
 
-async function disableUser(username) {
-  try {
-    const url = 'https://5kyvav817h.execute-api.us-east-1.amazonaws.com/dev';
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ username })
-    });
-    if (response.ok) {
-      console.log('User disabled:', username);
-    } else {
-      console.error('Error disabling user:', response.statusText);
+async function enableUser(username) {
+  const apiName = 'AdminQueries';
+  const path = '/enableUser';
+  const myInit = {
+    body: {
+      "username": username
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${(await Auth.currentSession()).getAccessToken().getJwtToken()}`
     }
-  } catch (error) {
-    console.error('Error disabling user:', error);
   }
+  
+  const response = await API.post(apiName, path, myInit);
+  return response;
 }
 
 async function getUserGroups() {
@@ -66,12 +65,50 @@ async function getDeletableUserGroups() {
 
 let nextToken;
 
-async function listUsers(limit) {
+async function listCommanders(limit) {
   let apiName = 'AdminQueries';
-  let path = '/listUsers';
+  let path = '/listUsersInGroup';
   let myInit = {
     queryStringParameters: {
-      // "groupname": "Administrators",
+      "groupname": 'Installation-Commanders',
+      "limit": limit,
+      "token": nextToken
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${(await Auth.currentSession()).getAccessToken().getJwtToken()}`
+    }
+  }
+  const { NextToken, ...rest } = await API.get(apiName, path, myInit);
+  nextToken = NextToken;
+  return rest;
+}
+
+async function listAuditors(limit) {
+  let apiName = 'AdminQueries';
+  let path = '/listUsersInGroup';
+  let myInit = {
+    queryStringParameters: {
+      "groupname": 'SAPRO-Auditors',
+      "limit": limit,
+      "token": nextToken
+    },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${(await Auth.currentSession()).getAccessToken().getJwtToken()}`
+    }
+  }
+  const { NextToken, ...rest } = await API.get(apiName, path, myInit);
+  nextToken = NextToken;
+  return rest;
+}
+
+async function listWorkCenterAdmins(limit) {
+  let apiName = 'AdminQueries';
+  let path = '/listUsersInGroup';
+  let myInit = {
+    queryStringParameters: {
+      "groupname": 'Work-Center-Admins',
       "limit": limit,
       "token": nextToken
     },
@@ -87,29 +124,82 @@ async function listUsers(limit) {
 
 function Admin() {
   const [users, setUsers] = useState([]);
-  const [usersgroups, setUsersGroups] = useState([]);
+  const [users2, setUsers2] = useState([]);
+  const [users3, setUsers3] = useState([]);
   const [deletableGroups, setDeletableGroups] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+
+
 
   useEffect(() => {
     async function fetchData() {
       const isUserAdmin = await isAdminUser();
       setIsAdmin(isUserAdmin);
       if (isUserAdmin) {
-        const fetchedUsers = await listUsers();
-        const returnedGroups = await getGroups(users);
+        const fetchedUsers = await listCommanders();
+        const fetchedUsers2 = await listAuditors();
+        const fetchedUsers3 = await listWorkCenterAdmins();
         const fetchedDeletableGroups = await getDeletableUserGroups();
-        setUsers(fetchedUsers.Users);
+    
+        // Add the 'enabled' property to each user object
+        const updatedUsers = fetchedUsers.Users.map(user => ({...user, enabled: user.Enabled}));
+        const updatedUsers2 = fetchedUsers2.Users.map(user => ({...user, enabled: user.Enabled}));
+        const updatedUsers3 = fetchedUsers3.Users.map(user => ({...user, enabled: user.Enabled}));
+    
+        setUsers(updatedUsers);
+        setUsers2(updatedUsers2);
+        setUsers3(updatedUsers3);
         setDeletableGroups(fetchedDeletableGroups);
-        setUsersGroups(returnedGroups);
-        console.log("Users:", fetchedUsers.Users)
       }
     }
     fetchData();
   }, []);
 
+  async function handleEnableUser(username) {
+    await enableUser(username);
+  
+    const updatedUsers = users.map(user => {
+      if (user.username === username) {
+        return {
+          ...user,
+          enabled: true
+        };
+      } else {
+        return user;
+      }
+    });
+  
+    const updatedUsers2 = users2.map(user => {
+      if (user.username === username) {
+        return {
+          ...user,
+          enabled: true
+        };
+      } else {
+        return user;
+      }
+    });
+  
+    const updatedUsers3 = users3.map(user => {
+      if (user.username === username) {
+        return {
+          ...user,
+          enabled: true
+        };
+      } else {
+        return user;
+      }
+    });
+  
+    setUsers(updatedUsers);
+    setUsers2(updatedUsers2);
+    setUsers3(updatedUsers3);
+    window.location.reload();
+  }
+
   async function handleDisableUser(username) {
     await disableUser(username);
+  
     const updatedUsers = users.map(user => {
       if (user.username === username) {
         return {
@@ -120,49 +210,143 @@ function Admin() {
         return user;
       }
     });
+  
+    const updatedUsers2 = users2.map(user => {
+      if (user.username === username) {
+        return {
+          ...user,
+          enabled: false
+        };
+      } else {
+        return user;
+      }
+    });
+  
+    const updatedUsers3 = users3.map(user => {
+      if (user.username === username) {
+        return {
+          ...user,
+          enabled: false
+        };
+      } else {
+        return user;
+      }
+    });
+  
     setUsers(updatedUsers);
+    setUsers2(updatedUsers2);
+    setUsers3(updatedUsers3);
+    window.location.reload();
   }
 
   if (isAdmin) {
     return (
       <>
+        <div className="container">
         <h1>This is the Admin's page</h1>
-        <table>
+        </div>
+        <div className="container">
+        <h2>Installation-Commanders</h2>
+        </div>
+        <div className="container">
+        
+        <table style={{ border: '1px solid black', padding: '10px' }}>
           <thead>
             <tr>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Groups</th>
-              <th>Delete User</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Disable User</th>
+            <th>Enable User</th>
             </tr>
           </thead>
           <tbody>
             {users.map(user => (
               <tr key={user.Attributes.email}>
                 <td>{user.Username}</td>
-                {/* NOTE: This is actually heinous, but check the log for the full visualization of the returned data structure */}
                 <td>{user.Attributes[2].Value}</td>
-                <td>{() => {const test = getGroups(user.Username); return test;}}</td> 
-                {/* <td>
-                  {deletableGroups.some(group => user.groups.includes(group)) ? (
-                    <button onClick={() => handleDisableUser(user.username)}>Delete</button>
-                  ) : (
-                    'N/A'
-                  )}
-                </td> */}
+                <td>{user.enabled ? 'Enabled' : 'Disabled'}</td>
+                <td>
+                  <button onClick={() => handleDisableUser(user.Username)}>Disable</button>
+                </td>
+                <td>
+                  <button onClick={() => handleEnableUser(user.Username)}>Enable</button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-        {/* <button onClick={() => listUsers()}>List Editors</button> */}
+        </div>
+        <div className="container"><h2>Work-Center-Admins</h2></div>
+        
+        <div className="container">
+        
+        <table style={{ border: '1px solid black', padding: '10px' }}>
+          <thead>
+            <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Disable User</th>
+            <th>Enable User</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users3.map(user => (
+              <tr key={user.Attributes.email}>
+                <td>{user.Username}</td>
+                <td>{user.Attributes[2].Value}</td>
+                <td>{user.enabled ? 'Enabled' : 'Disabled'}</td>
+                <td>
+                  <button onClick={() => handleDisableUser(user.Username)}>Disable</button>
+                </td>
+                <td>
+                  <button onClick={() => handleEnableUser(user.Username)}>Enable</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        </div>
+        <div className="container"><h2>SAPRO-Auditors</h2></div>
+        <div className="container">
+        
+    <table style={{ border: '1px solid black', padding: '10px' }}>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Status</th>
+              <th>Disable User</th>
+              <th>Enable User</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users2.map(user => (
+              <tr key={user.Attributes.email}>
+                <td>{user.Username}</td>
+                <td>{user.Attributes[2].Value}</td>
+                <td>{user.enabled ? 'Enabled' : 'Disabled'}</td>
+                <td>
+                  <button onClick={() => handleDisableUser(user.Username)}>Disable</button>
+                </td>
+                <td>
+                  <button onClick={() => handleEnableUser(user.Username)}>Enable</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        </div>
       </>
     );
+
   } else {
     return (
       <>
         <h1>Sorry! You do not have access to this page!</h1>
         <h2>If you think this is an error, please relax and deal with it.</h2>
-        <button onClick={() => listUsers(5)}>List Editors</button>
+        <button onClick={() => listCommanders(5)}>List Editors</button>
       </>
     );
   }
