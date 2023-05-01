@@ -4,7 +4,6 @@ import Layout from "./pages/Layout";
 import About from "./pages/About";
 import Account from "./pages/Account";
 import Admin from "./pages/Admin";
-import Account from "./pages/Account";
 import Contact from "./pages/Contact";
 import Logout from "./pages/Logout";
 import NoPage from "./pages/NoPage";
