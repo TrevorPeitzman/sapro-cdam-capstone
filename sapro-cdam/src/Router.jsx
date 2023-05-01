@@ -33,6 +33,7 @@ function Router() {
                             <Route path="Dashboard" element={<Dashboard />} />
                             <Route path="CommandDetail/:id" element={<CommandDetail />} />
                             <Route path="CommandDetail/:id/:itemID" element={<ItemDetails />} />
+                            <Route path="Account" element={<Account />} />
                             <Route path="Admin" element={<Admin />} />
                             <Route path="Account" element={<Account />} />
                             <Route path="Graphic" element={<Graphic />} />
