@@ -27,7 +27,6 @@ export default function ChecklistUpdateForm(props) {
     commandName: "",
     commandPOC: "",
     commandPOCEmail: "",
-    percentCompletion: "",
   };
   const [commandName, setCommandName] = React.useState(
     initialValues.commandName
@@ -35,9 +34,6 @@ export default function ChecklistUpdateForm(props) {
   const [commandPOC, setCommandPOC] = React.useState(initialValues.commandPOC);
   const [commandPOCEmail, setCommandPOCEmail] = React.useState(
     initialValues.commandPOCEmail
-  );
-  const [percentCompletion, setPercentCompletion] = React.useState(
-    initialValues.percentCompletion
   );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
@@ -47,7 +43,6 @@ export default function ChecklistUpdateForm(props) {
     setCommandName(cleanValues.commandName);
     setCommandPOC(cleanValues.commandPOC);
     setCommandPOCEmail(cleanValues.commandPOCEmail);
-    setPercentCompletion(cleanValues.percentCompletion);
     setErrors({});
   };
   const [checklistRecord, setChecklistRecord] =
@@ -66,7 +61,6 @@ export default function ChecklistUpdateForm(props) {
     commandName: [{ type: "Required" }],
     commandPOC: [],
     commandPOCEmail: [{ type: "Email" }],
-    percentCompletion: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -97,7 +91,6 @@ export default function ChecklistUpdateForm(props) {
           commandName,
           commandPOC,
           commandPOCEmail,
-          percentCompletion,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -156,7 +149,6 @@ export default function ChecklistUpdateForm(props) {
               commandName: value,
               commandPOC,
               commandPOCEmail,
-              percentCompletion,
             };
             const result = onChange(modelFields);
             value = result?.commandName ?? value;
@@ -183,7 +175,6 @@ export default function ChecklistUpdateForm(props) {
               commandName,
               commandPOC: value,
               commandPOCEmail,
-              percentCompletion,
             };
             const result = onChange(modelFields);
             value = result?.commandPOC ?? value;
@@ -210,7 +201,6 @@ export default function ChecklistUpdateForm(props) {
               commandName,
               commandPOC,
               commandPOCEmail: value,
-              percentCompletion,
             };
             const result = onChange(modelFields);
             value = result?.commandPOCEmail ?? value;
@@ -224,39 +214,6 @@ export default function ChecklistUpdateForm(props) {
         errorMessage={errors.commandPOCEmail?.errorMessage}
         hasError={errors.commandPOCEmail?.hasError}
         {...getOverrideProps(overrides, "commandPOCEmail")}
-      ></TextField>
-      <TextField
-        label="Percent completion"
-        isRequired={false}
-        isReadOnly={false}
-        type="number"
-        step="any"
-        value={percentCompletion}
-        onChange={(e) => {
-          let value = isNaN(parseFloat(e.target.value))
-            ? e.target.value
-            : parseFloat(e.target.value);
-          if (onChange) {
-            const modelFields = {
-              commandName,
-              commandPOC,
-              commandPOCEmail,
-              percentCompletion: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.percentCompletion ?? value;
-          }
-          if (errors.percentCompletion?.hasError) {
-            runValidationTasks("percentCompletion", value);
-          }
-          setPercentCompletion(value);
-        }}
-        onBlur={() =>
-          runValidationTasks("percentCompletion", percentCompletion)
-        }
-        errorMessage={errors.percentCompletion?.errorMessage}
-        hasError={errors.percentCompletion?.hasError}
-        {...getOverrideProps(overrides, "percentCompletion")}
       ></TextField>
       <Flex
         justifyContent="space-between"

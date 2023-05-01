@@ -8,10 +8,10 @@
 import * as React from "react";
 import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
-import { Checklist } from "../models";
+import { AccessRequestList } from "../models";
 import { fetchByPath, validateField } from "./utils";
 import { DataStore } from "aws-amplify";
-export default function ChecklistCreateForm(props) {
+export default function AccessRequestListCreateForm(props) {
   const {
     clearOnSuccess = true,
     onSuccess,
@@ -23,28 +23,20 @@ export default function ChecklistCreateForm(props) {
     ...rest
   } = props;
   const initialValues = {
-    commandName: "",
-    commandPOC: "",
-    commandPOCEmail: "",
+    email: "",
+    reason: "",
   };
-  const [commandName, setCommandName] = React.useState(
-    initialValues.commandName
-  );
-  const [commandPOC, setCommandPOC] = React.useState(initialValues.commandPOC);
-  const [commandPOCEmail, setCommandPOCEmail] = React.useState(
-    initialValues.commandPOCEmail
-  );
+  const [email, setEmail] = React.useState(initialValues.email);
+  const [reason, setReason] = React.useState(initialValues.reason);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
-    setCommandName(initialValues.commandName);
-    setCommandPOC(initialValues.commandPOC);
-    setCommandPOCEmail(initialValues.commandPOCEmail);
+    setEmail(initialValues.email);
+    setReason(initialValues.reason);
     setErrors({});
   };
   const validations = {
-    commandName: [{ type: "Required" }],
-    commandPOC: [],
-    commandPOCEmail: [{ type: "Email" }],
+    email: [{ type: "Required" }, { type: "Email" }],
+    reason: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -72,9 +64,8 @@ export default function ChecklistCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          commandName,
-          commandPOC,
-          commandPOCEmail,
+          email,
+          reason,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -104,7 +95,7 @@ export default function ChecklistCreateForm(props) {
               modelFields[key] = undefined;
             }
           });
-          await DataStore.save(new Checklist(modelFields));
+          await DataStore.save(new AccessRequestList(modelFields));
           if (onSuccess) {
             onSuccess(modelFields);
           }
@@ -117,86 +108,58 @@ export default function ChecklistCreateForm(props) {
           }
         }
       }}
-      {...getOverrideProps(overrides, "ChecklistCreateForm")}
+      {...getOverrideProps(overrides, "AccessRequestListCreateForm")}
       {...rest}
     >
       <TextField
-        label="Command name"
+        label="Email"
         isRequired={true}
         isReadOnly={false}
-        value={commandName}
+        value={email}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              commandName: value,
-              commandPOC,
-              commandPOCEmail,
+              email: value,
+              reason,
             };
             const result = onChange(modelFields);
-            value = result?.commandName ?? value;
+            value = result?.email ?? value;
           }
-          if (errors.commandName?.hasError) {
-            runValidationTasks("commandName", value);
+          if (errors.email?.hasError) {
+            runValidationTasks("email", value);
           }
-          setCommandName(value);
+          setEmail(value);
         }}
-        onBlur={() => runValidationTasks("commandName", commandName)}
-        errorMessage={errors.commandName?.errorMessage}
-        hasError={errors.commandName?.hasError}
-        {...getOverrideProps(overrides, "commandName")}
+        onBlur={() => runValidationTasks("email", email)}
+        errorMessage={errors.email?.errorMessage}
+        hasError={errors.email?.hasError}
+        {...getOverrideProps(overrides, "email")}
       ></TextField>
       <TextField
-        label="Command poc"
+        label="Reason"
         isRequired={false}
         isReadOnly={false}
-        value={commandPOC}
+        value={reason}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
-              commandName,
-              commandPOC: value,
-              commandPOCEmail,
+              email,
+              reason: value,
             };
             const result = onChange(modelFields);
-            value = result?.commandPOC ?? value;
+            value = result?.reason ?? value;
           }
-          if (errors.commandPOC?.hasError) {
-            runValidationTasks("commandPOC", value);
+          if (errors.reason?.hasError) {
+            runValidationTasks("reason", value);
           }
-          setCommandPOC(value);
+          setReason(value);
         }}
-        onBlur={() => runValidationTasks("commandPOC", commandPOC)}
-        errorMessage={errors.commandPOC?.errorMessage}
-        hasError={errors.commandPOC?.hasError}
-        {...getOverrideProps(overrides, "commandPOC")}
-      ></TextField>
-      <TextField
-        label="Command poc email"
-        isRequired={false}
-        isReadOnly={false}
-        value={commandPOCEmail}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              commandName,
-              commandPOC,
-              commandPOCEmail: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.commandPOCEmail ?? value;
-          }
-          if (errors.commandPOCEmail?.hasError) {
-            runValidationTasks("commandPOCEmail", value);
-          }
-          setCommandPOCEmail(value);
-        }}
-        onBlur={() => runValidationTasks("commandPOCEmail", commandPOCEmail)}
-        errorMessage={errors.commandPOCEmail?.errorMessage}
-        hasError={errors.commandPOCEmail?.hasError}
-        {...getOverrideProps(overrides, "commandPOCEmail")}
+        onBlur={() => runValidationTasks("reason", reason)}
+        errorMessage={errors.reason?.errorMessage}
+        hasError={errors.reason?.hasError}
+        {...getOverrideProps(overrides, "reason")}
       ></TextField>
       <Flex
         justifyContent="space-between"

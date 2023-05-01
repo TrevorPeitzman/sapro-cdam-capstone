@@ -58,6 +58,7 @@
     "adminQueries": false,
     "thirdPartyAuth": false,
     "authProviders": [],
-    "hostedUI": false
+    "hostedUI": false,
+    "adminQueryGroup": "Administrators"
   }
 }
