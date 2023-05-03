@@ -373,7 +373,6 @@ export function GenerateReport() {
         user_selection = sel
        //console.log("test")
     }
-
  
     function SelectionUI() {
         //while(!ready) {
@@ -414,7 +413,7 @@ export function GenerateReport() {
             usr_sel.push(state[x]);
             //console.log("pushed", x, state[x]);
         }
-        setSel(usr_sel)
+        //setSel(usr_sel)
 
        //console.log(usr_sel)
         const almosterror = usr_sel.filter((v) => v).length >= 5;
@@ -550,10 +549,10 @@ export function GenerateReport() {
         </Document>
     )
 
-    const [instance, updateInstance] = usePDF({document: TestDoc});
-    useEffect(() => {
-        // updateInstance()
-    }, [user_selection])    
+    /*const [instance, updateInstance] = usePDF({document: TestDoc});
+    // useEffect(() => {
+    //     // updateInstance()
+    // }, [user_selection])    
     const Test = () => {
         if (instance.loading) return <div>Loading ...</div>;
 
@@ -564,7 +563,7 @@ export function GenerateReport() {
             Download
           </a>
         );
-    }
+    }*/
 
 
     
@@ -606,7 +605,7 @@ export function GenerateReport() {
                         */}
                         </Item> 
                         
-                        <Test/>
+                        {/*<Test/>*/}
                         
                         
                         {/*
